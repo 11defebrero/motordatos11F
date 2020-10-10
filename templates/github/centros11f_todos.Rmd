@@ -1,0 +1,100 @@
+---
+pagetitle: "Centros11F - listado"
+output: 
+  html_document: 
+    theme: cerulean
+    self_contained: no
+---
+
+
+![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+
+
+<style type="text/css">
+
+h1 {
+  color: #00BCB4;
+}
+h2 {
+  color: #00BCB4;
+}
+h3 {
+  color: #00BCB4;
+}
+h4 {
+  color: #00BCB4;
+}
+h5 {
+  color: #00BCB4;
+}
+li {
+  color: #00BCB4;
+}
+</style>
+
+
+
+# Actividades CENTROS11F
+
+
+¿Organizáis actividades internamente en vuestro centro educativo para celebrar el [Día de la Mujer y la Niña en la Ciencia](https://11defebrero.org/)? Entonces sois un Centro11F.
+
+Consulta nuestras secciones de [materiales](https://11defebrero.org/materiales/) e ideas [#Enclase11F](https://11defebrero.org/centros-educativos/ideas-enclase11f/) si quieres más fuentes de inspiración o material para usar en tus aulas.
+
+Si tenéis ya todo organizado, podéis comunicárnoslo a través del formulario que encontrarás en [este enlace](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad/).
+
+Si tenéis dudas, podéis mirar la sección de [preguntas frecuentes](https://11defebrero.org/preguntas-frecuentes/).
+
+Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
+
+
+
+-------------
+
+### [Buscar en mapa](centros11f_mapa_tabla.html#mapa-centros11F){target="_blank"}
+
+### [Buscar en tabla](centros11f_mapa_tabla.html#tabla-centros11F){target="_blank"}
+
+
+-------------
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r include=FALSE}
+library(Rpkg11F)
+library(dplyr)
+```
+
+```{r include=FALSE}
+
+ID_SHEET_ACTIVIDADES_LIMPIO <- params$id_sheets_googledrive$actividades$limpio
+
+centros11f <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_LIMPIO) %>% 
+  filter(clase_actividad == "CENTRO11F") %>% 
+  filter(procesado %in% c("OK", "CORREGIDO", "REVISADO")) %>% 
+  arrange(com_autonoma, provincia, localidad, centro)
+
+```
+
+
+
+### Detalles
+
+```{r results='asis'}
+
+for (i in 1:nrow(centros11f)) {
+  
+  cat("\n\n-------------\n\n")
+  cat(texto_centro11f(centros11f[i,]))
+  cat("<br/>")
+  
+}
+
+
+```
+

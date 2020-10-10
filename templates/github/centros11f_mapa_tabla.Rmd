@@ -1,0 +1,177 @@
+---
+pagetitle: "Centros11F - mapa y tabla"
+output: 
+  html_document:
+    theme: cerulean
+    self_contained: no
+---
+
+
+![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+
+
+<style type="text/css">
+
+h1 {
+  color: #00BCB4;
+}
+h2 {
+  color: #00BCB4;
+}
+h3 {
+  color: #00BCB4;
+}
+h4 {
+  color: #00BCB4;
+}
+h5 {
+  color: #00BCB4;
+}
+li {
+  color: #00BCB4;
+}
+</style>
+
+
+
+# Actividades CENTROS11F 
+
+
+¿Organizáis actividades internamente en vuestro centro educativo para celebrar el [Día de la Mujer y la Niña en la Ciencia](https://11defebrero.org/)? Entonces sois un Centro11F.
+
+Consulta nuestras secciones de [materiales](https://11defebrero.org/materiales/) e ideas [#Enclase11F](https://11defebrero.org/centros-educativos/ideas-enclase11f/) si quieres más fuentes de inspiración o material para usar en tus aulas.
+
+Si tenéis ya todo organizado, podéis comunicárnoslo a través del formulario que encontrarás en [este enlace](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad/).
+
+Si tenéis dudas, podéis mirar la sección de [preguntas frecuentes](https://11defebrero.org/preguntas-frecuentes/).
+
+Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
+
+
+
+-------------
+
+### [Buscar en mapa](#mapa-centros11f)
+
+### [Buscar en tabla](#tabla-centros11f)
+
+### [Ver todos](centros11f_todos.html#detalles){target="_blank"}
+
+
+-------------
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r}
+library(Rpkg11F)
+library(dplyr)
+library(leaflet)
+library(DT)
+```
+
+```{r}
+
+ID_SHEET_ACTIVIDADES_LIMPIO <- params$id_sheets_googledrive$actividades$limpio
+
+centros11f <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_LIMPIO) %>% 
+  filter(clase_actividad == "CENTRO11F") %>% 
+  filter(procesado %in% c("OK", "CORREGIDO", "REVISADO")) %>% 
+  arrange(com_autonoma, provincia, localidad, centro)
+
+```
+
+
+
+### Mapa Centros11F
+
+En este mapa interactivo puedes consultar las actividades programadas por los centros educativos, Centros11F. La localización de los centros en el mapa es aproximada, corresponde al código postal en el que se ubican.
+
+Si pinchas en cualquier icono podrás acceder a más información sobre cada actividad. 
+
+Si tienes problema al visualizar el mapa, por favor, prueba con otro navegador.
+
+```{r}
+
+centros11f_mapa <- centros11f %>%
+  filter(!is.na(lon) & !is.na(lat))
+
+# Identificar actividades distintas del mismo centro
+centros11f_mapa <- centros11f_mapa %>% 
+  group_by(lon, lat, centro) %>% 
+  mutate(
+    total_actividades = n(),
+    n_actividad = row_number()
+  ) %>% ungroup() %>% 
+  mutate(
+    centro = ifelse(total_actividades == 1, centro, paste0(centro, " (Actividad ", n_actividad, ")"))
+  )
+
+# Crear texto popup
+centros11f_mapa <- centros11f_mapa %>% 
+  mutate(
+    popup = popup_centro11f(., base_url="centros11f_todos.html")
+  )
+
+```
+
+```{r mapa, out.width='100%', eval=TRUE}
+
+# Usar icono del 11F para los marcadores
+icon11F <- makeIcon(
+  iconUrl = "https://raw.githubusercontent.com/11defebrero/assets/main/images/chincheta_gris.png",
+  iconWidth = 20, iconHeight = 30,
+  iconAnchorX = 10, iconAnchorY = 15
+)
+
+leaflet(centros11f_mapa) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addMarkers(
+    ~lon, ~lat, 
+    label = ~centro, 
+    popup = ~popup, 
+    icon = icon11F,  
+    clusterOptions = markerClusterOptions()
+  )
+
+```
+
+<br/>
+
+
+### Tabla Centros11F
+
+En esta tabla podéis consultar las actividades programadas por los centros educativos por provincia, municipio, tipo de actividad, etc. Podéis filtrar por varios criterios desde la fila superior (aparecerá una **X** en las columnas que tengan el filtro activado). 
+
+Si pincháis en el nombre del centro podréis acceder a más información útil. 
+
+<br/>
+
+```{r}
+
+centros11f_tabla <- centros11f %>% 
+  transmute(
+    Centro = link_referencia(id, centro, base_url="centros11f_todos.html"),
+    Provincia = provincia,
+    Localidad = paste(codpostal, localidad, sep=", "),
+    `Tipo actividad` = tipo,
+    `Título` = titulo
+  )
+
+```
+
+```{r tabla}
+
+datatable(centros11f_tabla, filter="top", rownames=FALSE, 
+          escape=-which(names(centros11f_tabla) %in% c("Centro")))
+
+```
+
+
+Última actualización: `r Sys.Date()`
+
+

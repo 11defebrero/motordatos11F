@@ -1,0 +1,96 @@
+---
+pagetitle: "Charlas concertadas - listado"
+output: 
+  html_document: 
+    theme: cerulean
+    self_contained: no
+---
+
+
+![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+
+
+<style type="text/css">
+
+h1 {
+  color: #00BCB4;
+}
+h2 {
+  color: #00BCB4;
+}
+h3 {
+  color: #00BCB4;
+}
+h4 {
+  color: #00BCB4;
+}
+h5 {
+  color: #00BCB4;
+}
+li {
+  color: #00BCB4;
+}
+</style>
+
+
+
+# Charlas CONCERTADAS en centros educativos
+
+
+Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
+
+Para ver los centros que han solicitado charla/taller y contactar con ellos pincha [aquí](solicitudes_mapa_tabla.html). Una vez concertada la charla, por favor, envíanos la información a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
+
+Si vas a dar una charla en un centro que no lo había solicitado previamente, también puedes anunciarlo mediante el mismo [link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
+
+
+
+-------------
+
+### [Buscar en mapa](concertadas_mapa_tabla.html#mapa-de-charlas-concertadas){target="_blank"}
+
+### [Buscar en tabla](concertadas_mapa_tabla.html#tabla-de-charlas-concertadas){target="_blank"}
+
+
+-------------
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r}
+library(Rpkg11F)
+library(dplyr)
+```
+
+```{r}
+
+ID_SHEET_CONCERTADAS_LIMPIO <- params$id_sheets_googledrive$concertadas$limpio
+
+concertadas <- get_charlas_concertadas_limpio(file_id=ID_SHEET_CONCERTADAS_LIMPIO) %>% 
+  filter(procesado %in% c("OK", "CORREGIDO")) %>% 
+  arrange(com_autonoma, provincia, localidad, centro, ponente)
+
+```
+
+
+
+### Detalles
+
+```{r results='asis'}
+
+for (i in 1:nrow(concertadas)) {
+  
+  cat("\n\n-------------\n\n")
+  cat(texto_charla_concertada(concertadas[i,]))
+  cat("<br/>")
+  
+}
+
+
+```
+
+

@@ -1,0 +1,101 @@
+---
+pagetitle: "Solicitudes - listado"
+output: 
+  html_document: 
+    theme: cerulean
+    self_contained: no
+---
+
+
+![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+
+
+<style type="text/css">
+
+h1 {
+  color: #00BCB4;
+}
+h2 {
+  color: #00BCB4;
+}
+h3 {
+  color: #00BCB4;
+}
+h4 {
+  color: #00BCB4;
+}
+h5 {
+  color: #00BCB4;
+}
+li {
+  color: #00BCB4;
+}
+</style>
+
+
+
+# Solicitud de charlas en centros educativos
+
+
+Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
+
+Una vez seleccionado el centro, rellena [este formulario](https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform) para que os pongamos en contacto y podáis concertar la charla.
+
+Una vez concertada la charla, por favor, envíanos la información en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad)
+
+En [este enlace](concertadas_mapa_tabla.html) podéis ver todas las charlas concertadas hasta el momento.
+
+
+-------------
+
+### [Buscar en mapa](solicitudes_mapa_tabla.html#mapa-de-charlas-solicitadas){target="_blank"}
+
+### [Buscar en tabla](solicitudes_mapa_tabla.html#tabla-de-charlas-solicitadas){target="_blank"}
+
+
+-------------
+
+
+
+### Detalles
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r}
+library(Rpkg11F)
+library(dplyr)
+```
+
+```{r}
+
+ID_SHEET_SOLICITUDES_RESTANTES <- params$id_sheets_googledrive$solicitudes$restantes
+
+solicitudes <- get_solicitudes_charlas_limpio(file_id=ID_SHEET_SOLICITUDES_RESTANTES) %>% 
+  filter(procesado %in% c("OK", "CORREGIDO")) %>% 
+  arrange(com_autonoma, provincia, localidad, centro, nombre)
+
+```
+
+```{r results='asis'}
+
+for (i in 1:nrow(solicitudes)) {
+  
+  cat("\n\n-------------\n\n")
+  cat(texto_solicitud_charla(solicitudes[i,]))
+  cat(html_link(
+    texto="**>> CONTACTAR CON EL CENTRO <<**",
+    url=paste0("https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform",
+               "?entry.212353241=", solicitudes$id[i]),
+    new_tab=TRUE
+  ))
+  cat("<br/>")
+  
+}
+
+
+```
+
+

@@ -1,0 +1,42 @@
+---
+title: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r img, cache=FALSE, out.width='80%', fig.align='center', dpi=300, eval=TRUE}
+
+imagen_url <- actividades_publicar$imagen[i]
+if (!is.na(imagen_url)) {
+  knitr::include_graphics(imagen_url)
+}
+
+```
+
+<br>
+
+```{r info, results='asis'}
+
+texto_cabecera <- cabecera_actividad(actividades_publicar[i,])
+cat(texto_cabecera)
+
+```
+
+<br>
+
+```{r desc, results='asis'}
+
+texto_cuerpo <- texto_actividad(actividades_publicar[i,])
+cat(texto_cuerpo)
+
+```
+
+<br>
+
+

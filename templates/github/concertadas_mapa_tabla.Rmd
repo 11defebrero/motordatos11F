@@ -1,0 +1,171 @@
+---
+pagetitle: "Charlas concertadas - mapa y tabla"
+output: 
+  html_document:
+    theme: cerulean
+    self_contained: no
+---
+
+
+![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+
+
+<style type="text/css">
+
+h1 {
+  color: #00BCB4;
+}
+h2 {
+  color: #00BCB4;
+}
+h3 {
+  color: #00BCB4;
+}
+h4 {
+  color: #00BCB4;
+}
+h5 {
+  color: #00BCB4;
+}
+li {
+  color: #00BCB4;
+}
+</style>
+
+
+
+# Charlas CONCERTADAS en centros educativos
+
+
+Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
+
+Para ver los centros que han solicitado charla/taller y contactar con ellos pincha [aquí](solicitudes_mapa_tabla.html). Una vez concertada la charla, por favor, envíanos la información a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
+
+Si vas a dar una charla en un centro que no lo había solicitado previamente, también puedes anunciarlo mediante el mismo [link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
+
+
+-------------
+
+### [Buscar en mapa](#mapa-de-charlas-concertadas)
+
+### [Buscar en tabla](#tabla-de-charlas-concertadas)
+
+### [Ver todas](concertadas_todas.html#detalles){target="_blank"}
+
+
+-------------
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r}
+library(Rpkg11F)
+library(dplyr)
+library(leaflet)
+library(DT)
+```
+
+```{r}
+
+ID_SHEET_CONCERTADAS_LIMPIO <- params$id_sheets_googledrive$concertadas$limpio
+
+concertadas <- get_charlas_concertadas_limpio(file_id=ID_SHEET_CONCERTADAS_LIMPIO) %>% 
+  filter(procesado %in% c("OK", "CORREGIDO")) %>% 
+  arrange(com_autonoma, provincia, localidad, centro, ponente)
+
+```
+
+
+### Mapa de charlas concertadas
+
+En este mapa interactivo puedes consultar las charlas concertadas.  La localización de los centros en el mapa es aproximada, corresponde al código postal en el que se ubican.
+
+Si pinchas en cualquier icono podrás acceder a más información sobre cada centro y las charlas concertadas.
+
+Si tienes problema al visualizar el mapa, por favor, prueba con otro navegador.
+
+```{r}
+
+concertadas_mapa <- concertadas %>%
+  filter(!is.na(lon) & !is.na(lat))
+
+# Identificar solicitudes distintas del mismo centro
+concertadas_mapa <- concertadas_mapa %>% 
+  group_by(lon, lat, centro) %>% 
+  mutate(
+    total_charlas = n(),
+    n_charla = row_number()
+  ) %>% ungroup() %>% 
+  mutate(
+    centro = ifelse(total_charlas == 1, centro, paste0(centro, " (Charla ", n_charla, ")"))
+  )
+
+# Crear texto popup
+concertadas_mapa <- concertadas_mapa %>% 
+  mutate(
+    popup = popup_charla_concertada(., base_url="concertadas_todas.html")
+  )
+
+```
+
+```{r mapa, out.width='100%', eval=TRUE}
+
+# Usar icono del 11F para los marcadores
+icon11F <- makeIcon(
+  iconUrl = "https://raw.githubusercontent.com/11defebrero/assets/main/images/logo_concertadas.png",
+  iconWidth = 30, iconHeight = 30,
+  iconAnchorX = 15, iconAnchorY = 15
+)
+
+leaflet(concertadas_mapa) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addMarkers(
+    ~lon, ~lat, 
+    label = ~centro, 
+    popup = ~popup, 
+    icon = icon11F,  
+    clusterOptions = markerClusterOptions()
+  )
+
+```
+
+<br/>
+
+
+### Tabla de charlas concertadas
+
+En esta tabla podéis consultar las charlas concertadas por provincia, localidad, nombre del centro, nivel o curso para el que se impartirá la charla, y título de la misma. Notad que podéis filtrar por varios criterios desde la fila superior (aparecerá una **X** en las columnas que tengan el filtro activado). 
+
+Si pincháis en el nombre del centro educativo podréis acceder a más información útil sobre la charla concertada.
+
+<br/>
+
+```{r}
+
+concertadas_tabla <- concertadas %>% 
+  transmute(
+    Centro = link_referencia(id, centro, base_url="concertadas_todas.html"),
+    Provincia = provincia,
+    Localidad = paste(codpostal, localidad, sep=", "),
+    Nivel = niveles,
+    Ponente = ponente,
+    `Título` = titulo_charla
+  )
+
+```
+
+```{r tabla}
+
+datatable(concertadas_tabla, filter="top", rownames=FALSE, 
+          escape=-which(names(concertadas_tabla) %in% c("Centro")))
+
+```
+
+
+Última actualización: `r Sys.Date()`
+
+
