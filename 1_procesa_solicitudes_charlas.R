@@ -16,7 +16,6 @@ solicitudes_original <- get_solicitudes_charlas_original(file_id=ID_SHEET_SOLICI
 solicitudes_limpio <- get_solicitudes_charlas_limpio(file_id=ID_SHEET_SOLICITUDES_LIMPIO)
 
 solicitudes_new <- solicitudes_original %>%
-  elimina_duplicados() %>%
   filter(! id %in% solicitudes_limpio$id)
 
 if (nrow(solicitudes_new) == 0) {
@@ -41,15 +40,9 @@ solicitudes_new <- geolocaliza_solicitudes_charlas(solicitudes_new) %>%
 
 # Tratar duplicados
 
-# marca posibles duplicados en la columna pdup
-solicitudes_new <- solicitudes_new %>%
-  marca_duplicados()
-
-# elimina duplicados claros
 solicitudes_limpio <- solicitudes_limpio %>%
   rbind(solicitudes_new) %>%
-  elimina_duplicados() %>%
-  marca_duplicados()
+  marca_duplicados_solicitudes_charlas()
 
 
 # Subir a Google Drive

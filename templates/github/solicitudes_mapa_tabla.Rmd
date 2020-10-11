@@ -36,18 +36,37 @@ li {
 
 
 
+```{r include=FALSE}
+
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)
+
+library(formularios11F)
+library(dplyr)
+library(leaflet)
+library(DT)
+
+solicitudes <- get_solicitudes_charlas_limpio(file_id=params$id_sheet) %>% 
+  filter(procesado %in% c("OK", "CORREGIDO")) %>% 
+  arrange(com_autonoma, provincia, localidad)
+
+```
+
+
 # Solicitud de charlas en centros educativos
 
 
-En esta página están todas las charlas solicitadas por los centros educativos. Pincha [aquí](solicitudes_videollamada.html) si deseas ver únicamente las solicitudes de charlas que pueden hacerse mediante videollamada (Skype, Hangouts, etc).
+En esta página están todas las charlas solicitadas por los centros educativos.
+Hay `r nrow(solicitudes)` solicitudes en total.
 
 Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
 
-Una vez seleccionado el centro, rellena [este formulario](https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform) para entablar contacto con el centro y que podáis concertar la charla. 
+<!-- Una vez seleccionado el centro, rellena [este formulario](https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform) para entablar contacto con el centro y que podáis concertar la charla.  -->
 
-Una vez concertada la charla, por favor, envíanos la información de esta en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad)
+<!-- Una vez concertada la charla, por favor, envíanos la información de esta en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad) -->
 
-En [este enlace](concertadas_mapa_tabla.html) podéis ver todas las charlas concertadas hasta el momento.
+<!-- En [este enlace](concertadas_mapa_tabla.html) podéis ver todas las charlas concertadas hasta el momento. -->
+
 
 -------------
 
@@ -57,29 +76,7 @@ En [este enlace](concertadas_mapa_tabla.html) podéis ver todas las charlas conc
 
 ### [Ver todas](solicitudes_todas.html#detalles){target="_blank"}
 
-
 -------------
-
-
-```{r include=FALSE}
-library(knitr)
-opts_chunk$set(echo = FALSE, message = FALSE)
-```
-
-```{r}
-library(formularios11F)
-library(dplyr)
-library(leaflet)
-library(DT)
-```
-
-```{r}
-
-solicitudes <- get_solicitudes_charlas_limpio(file_id=params$id_sheet) %>% 
-  filter(procesado %in% c("OK", "CORREGIDO")) %>% 
-  arrange(com_autonoma, provincia, localidad)
-
-```
 
 
 ### Mapa de charlas solicitadas
@@ -140,9 +137,11 @@ leaflet(solicitudes_mapa) %>%
 
 ### Tabla de charlas solicitadas
 
-En esta tabla podéis realizar la búsqueda del centro educativo que mejor os venga (por provincia, localidad, código postal, nombre del centro, nivel solicitado para la charla, tipo de charla, y si ésta puede ser por videollamada o en inglés). Notad que podéis filtrar por varios criterios desde la fila superior (aparecerá una **X** en las columnas que tengan el filtro activado). 
+En esta tabla podéis realizar la búsqueda del centro educativo que mejor os venga (por provincia, localidad, código postal, nombre del centro, nivel solicitado para la charla, tipo de charla, y si ésta puede ser en inglés). Notad que podéis filtrar por varios criterios desde la fila superior (aparecerá una **X** en las columnas que tengan el filtro activado). 
 
-Si pincháis en el nombre del centro educativo podréis acceder a más información sobre este y la charla que ha solicitado, y contactarle para ofreceros a dar una charla o taller.
+Si pincháis en el nombre del centro educativo podréis acceder a más información sobre este y la charla que ha solicitado.
+<!-- , y contactarle para ofreceros a dar una charla o taller. -->
+En breve podréis también contactarle para ofreceros a dar una charla o taller.
 
 <br/>
 
@@ -154,7 +153,7 @@ solicitudes_tabla <- solicitudes %>%
     Referencia = id,
     Provincia = provincia,
     Localidad = paste(codpostal, localidad, sep=", "),
-    Videoll. = videollamada,
+    # Videoll. = videollamada,
     `Inglés` = ingles,
     Niveles = niveles,
     Tipos = gsub("La historia de científicas ilustres", "Científicas ilustres", fixed=TRUE,
