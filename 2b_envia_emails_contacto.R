@@ -6,8 +6,8 @@ library(dplyr)
 
 config <- leer_config("config/config.json")
 
-ID_SHEET_CONTACTOS_LIMPIO <- config$id_sheets_googledrive$contactos$limpio
-ID_SHEET_CONTACTOS_ENVIADO <- config$id_sheets_googledrive$contactos$enviado
+ID_SHEET_CONTACTOS_LIMPIO <- config$ids_googledrive$contactos$limpio
+ID_SHEET_CONTACTOS_ENVIADO <- config$ids_googledrive$contactos$enviado
 
 CUENTA_ENVIO_EMAILS <- config$email_envios
 

@@ -6,9 +6,9 @@ library(dplyr)
 
 config <- leer_config("config/config.json")
 
-ID_SHEET_CONTACTOS_ORIGINAL <- config$id_sheets_googledrive$contactos$original
-ID_SHEET_CONTACTOS_LIMPIO <- config$id_sheets_googledrive$contactos$limpio
-ID_SHEET_SOLICITUDES_LIMPIO <- config$id_sheets_googledrive$solicitudes$limpio
+ID_SHEET_CONTACTOS_ORIGINAL <- config$ids_googledrive$contactos$original
+ID_SHEET_CONTACTOS_LIMPIO <- config$ids_googledrive$contactos$limpio
+ID_SHEET_SOLICITUDES_LIMPIO <- config$ids_googledrive$solicitudes$limpio
 
 
 # Filtrar nuevas peticiones de contacto con centros

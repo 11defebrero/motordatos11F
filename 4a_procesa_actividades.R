@@ -7,8 +7,8 @@ library(rmarkdown)
 
 config <- leer_config("config/config.json")
 
-ID_SHEET_ACTIVIDADES_ORIGINAL <- config$id_sheets_googledrive$actividades$original
-ID_SHEET_ACTIVIDADES_LIMPIO <- config$id_sheets_googledrive$actividades$limpio
+ID_SHEET_ACTIVIDADES_ORIGINAL <- config$ids_googledrive$actividades$original
+ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
 
 
 # Filtrar nuevas peticiones de contacto con centros

@@ -6,8 +6,8 @@ library(dplyr)
 
 config <- leer_config("config/config.json")
 
-ID_SHEET_SOLICITUDES_ORIGINAL <- config$id_sheets_googledrive$solicitudes$original
-ID_SHEET_SOLICITUDES_LIMPIO <- config$id_sheets_googledrive$solicitudes$limpio
+ID_SHEET_SOLICITUDES_ORIGINAL <- config$ids_googledrive$solicitudes$original
+ID_SHEET_SOLICITUDES_LIMPIO <- config$ids_googledrive$solicitudes$limpio
 
 
 # Filtrar nuevas solicitudes

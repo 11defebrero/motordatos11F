@@ -6,8 +6,8 @@ library(dplyr)
 
 config <- leer_config("config/config.json")
 
-ID_SHEET_SOLICITUDES_RESTANTES <- config$id_sheets_googledrive$solicitudes$restantes
-ID_SHEET_CONCERTADAS_LIMPIO <- config$id_sheets_googledrive$concertadas$limpio
+ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$restantes
+ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
 
 
 # Descargar listados de solicitudes y de concertadas

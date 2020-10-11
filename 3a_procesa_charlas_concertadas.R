@@ -7,9 +7,9 @@ library(rmarkdown)
 
 config <- leer_config("config/config.json")
 
-ID_SHEET_CONCERTADAS_ORIGINAL <- config$id_sheets_googledrive$concertadas$original
-ID_SHEET_CONCERTADAS_LIMPIO <- config$id_sheets_googledrive$concertadas$limpio
-ID_SHEET_SOLICITUDES_LIMPIO <- config$id_sheets_googledrive$solicitudes$limpio
+ID_SHEET_CONCERTADAS_ORIGINAL <- config$ids_googledrive$concertadas$original
+ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
+ID_SHEET_SOLICITUDES_LIMPIO <- config$ids_googledrive$solicitudes$limpio
 
 
 # Filtrar nuevos anuncios de charlas concertadas

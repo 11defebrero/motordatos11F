@@ -6,11 +6,11 @@ library(rmarkdown)
 
 config <- leer_config("config/config.json")
 
-# ID_SHEET_SOLICITUDES_RESTANTES <- config$id_sheets_googledrive$solicitudes$restantes
-ID_SHEET_SOLICITUDES_RESTANTES <- config$id_sheets_googledrive$solicitudes$limpio
-ID_SHEET_CONCERTADAS_LIMPIO <- config$id_sheets_googledrive$concertadas$limpio
-ID_SHEET_ACTIVIDADES_LIMPIO <- config$id_sheets_googledrive$actividades$limpio
-ID_SHEET_ACTIVIDADES_WORDPRESS <- config$id_sheets_googledrive$actividades$wordpress
+# ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$restantes
+ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$limpio
+ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
+ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
+ID_SHEET_ACTIVIDADES_WORDPRESS <- config$ids_googledrive$actividades$wordpress
 
 DIR_WEB <- file.path(dirname(rprojroot::find_rstudio_root_file()), paste0("web11F-", config$edicion))
 DIR_WEB_LIBS <- file.path(DIR_WEB, "libs/")

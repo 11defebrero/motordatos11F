@@ -1,0 +1,329 @@
+---
+title: "Resumen charlas solicitadas en centros educativos"
+date: '`r format(Sys.Date(), "%d de %B de %Y")`'
+params:
+  id_sheet: NA
+output: 
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
+    number_sections: TRUE
+---
+
+```{r packages, include = FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+library(knitr)
+  
+library(formularios11F)
+library(dplyr)
+library(stringr)
+library(data.table) 
+library(lubridate) 
+library(ggplot2)
+
+```
+
+```{r carga datos, include=FALSE}
+
+solic <- get_solicitudes_charlas_limpio(file_id=params$id_sheet) %>% 
+  filter(procesado %in% c("OK", "CORREGIDO"))
+
+```
+
+----------
+
+# Resumen charlas solicitadas en centros educativos
+
+## Datos generales
+
+### Evolución solicitudes
+
+```{r graficos evolucion}
+
+nsolicitudes <- solic %>%
+  count(
+    dia = floor_date(timestamp, unit="day")
+  )
+
+ggplot(nsolicitudes, aes(x=dia, y=n, label=n)) +
+  geom_bar(stat="identity") + geom_text(vjust=2, color="white") +
+  labs(x="Día", y="Nº solicitudes")
+
+ggplot(nsolicitudes, aes(x=dia, y=cumsum(n), label=cumsum(n))) +
+  geom_bar(stat="identity") + geom_text(vjust=2, color="white") +
+  labs(x="Día", y="Nº solicitudes (acumulado)")
+
+```
+
+
+### Número de centros, solicitudes (formularios enviados) y charlas
+```{r ncentros nsolic y ncharlas}
+
+ncentros <- dim(unique(solic[ , c("centro", "codpostal")]))[1]
+nsolic <- dim(solic)[1]
+
+lista_niveles <- c("Infantil 3 años", "Infantil 4 años", "Infantil 5 años", 
+                    "1º Primaria", "2º Primaria", "3º Primaria", 
+                    "4º Primaria", "5º Primaria", "6º Primaria", 
+                    "1º ESO", "2º ESO", "3º ESO", "4º ESO",
+                    "1º Bachillerato", "2º Bachillerato",
+                    "Formación profesional", "Adultos", "Otros"
+                  )
+
+lista_ciclos <- c("Infantil", "Primaria", "ESO", "Bachillerato", 
+                  "Formación profesional", "Adultos", "Otros"
+                  )
+
+lista_tipos <- tipo <- c("Charla de contenido científico", 
+                          "Experiencias de científicas", 
+                          "La historia de científicas ilustres"
+                        )
+
+data <- NULL ; data0 <- NULL
+for (i in 1:length(lista_niveles)){
+  data <- solic %>% 
+          filter(niveles %like% lista_niveles[i]) %>%
+          mutate(nivel = lista_niveles[i])
+  data0 <- rbind(data, data0)
+}
+data0$niveles <- NULL ; solic <- data0 ; data <- NULL ; data0 <- NULL
+for (i in 1:length(lista_ciclos)){
+  data <- solic %>% 
+          filter(nivel %like% lista_ciclos[i]) %>%
+          mutate(ciclo = lista_ciclos[i])
+  data0 <- rbind(data, data0)
+}
+
+solic <- data0 ; rm(data) ; rm(data0)
+solic$tipo1 <- solic$tipos %like% tipo[1]
+solic$tipo2 <- solic$tipos %like% tipo[2]
+solic$tipo3 <- solic$tipos %like% tipo[3]
+solic$tipos <- NULL
+
+ncharlas <- dim(solic)[1]
+
+tb <- solic %>%
+        summarise(ncentros, nsolic, ncharlas)
+kable(tb)
+```
+
+### Ciclo
+
+```{r distribucion por ciclos}
+
+tb <- solic %>%
+        group_by(ciclo) %>%
+        summarise(ncharlas = n()) # %>%
+        # arrange(order(lista_ciclos))
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", round(colSums(tb[ , 2]), 0))
+
+kable(tb)
+
+```
+
+### Nivel
+
+```{r distribucion por niveles}
+
+tb <- solic %>%
+        group_by(nivel) %>%
+        summarise(ncharlas = n()) # %>%
+        # arrange(order(lista_niveles))
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", colSums(tb[ , 2]) )
+
+kable(tb)
+
+```
+
+<!-- ### Solicitudes que aceptan videollamada -->
+
+<!-- ```{r videollamadas} -->
+<!-- tb <- solic %>%  -->
+<!--         group_by(videollamada) %>% -->
+<!--         summarise(nsolic = n_distinct(id), -->
+<!--                   ncharlas = n()) -->
+
+<!-- tb[ dim(tb)[1]+1, ] <- c("Total", colSums(tb[ , 2:3])) -->
+
+<!-- kable(tb) -->
+
+<!-- ``` -->
+
+
+### Inglés
+
+```{r videollamadas e ingles}
+tb <- solic %>% 
+        # group_by(videollamada, ingles) %>%
+        group_by(ingles) %>%
+        summarise(nsolic = n_distinct(id),
+                  ncharlas = n())
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", ":", colSums(tb[ , 3:4]))
+
+kable(tb)
+
+```
+
+### Tipo de charla
+```{r tipo de charla}
+
+c1 <- c("Contenido científico", "Experiencias personales", "Científicas ilustres") 
+c2 <- c(sum(solic$tipo1), sum(solic$tipo2), sum(solic$tipo3) )
+tb <- cbind(c1, c2)
+colnames(tb)<- c("tipo", "ncharlas") 
+kable(tb)
+
+```
+
+
+## Desglose por comunidades autónomas
+
+
+### Número de centros y charlas
+
+```{r distribucion por comunidades}
+
+tb <- solic %>%
+        group_by(com_autonoma) %>%
+        summarise(ncentros = n_distinct(centro, codpostal),
+                  ncharlas = n()) %>% 
+        mutate(peso_centros = round(ncentros / sum(ncentros) * 100, 1), 
+               peso_charlas = round(ncharlas / sum(ncharlas) * 100, 1) 
+               ) %>%
+        arrange(desc(ncentros))
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", round(colSums(tb[ , 2:5]), 0))
+
+kable(tb)
+
+```
+
+
+### Comunidad autónoma y ciclo
+
+```{r distribucion por comunidades y ciclos}
+
+tb <- solic %>%
+        group_by(com_autonoma, ciclo) %>%
+        summarise(ncharlas = n()) %>%
+        arrange(com_autonoma)
+
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", ":", round(colSums(tb[ , 3]), 0))
+
+kable(tb)
+
+```
+
+
+<!-- ### Comunidad autónoma y videollamada -->
+<!-- ```{r comunidades y videollamada} -->
+
+<!-- tb <- solic %>% -->
+<!--         group_by(com_autonoma, videollamada) %>% -->
+<!--         summarise(nsolic = n_distinct(id), -->
+<!--                   ncharlas = n()) %>% -->
+<!--         arrange(com_autonoma) -->
+
+
+<!-- tb[ dim(tb)[1]+1, ] <- c("Total", ":", round(colSums(tb[ , 3:4]), 0)) -->
+
+<!-- kable(tb) -->
+
+<!-- ``` -->
+
+
+### Comunidad autónoma / inglés
+
+```{r comunidades videollamada e ingles}
+
+tb <- solic %>%
+        # group_by(com_autonoma, videollamada, ingles) %>%
+        group_by(com_autonoma, ingles) %>%
+        summarise(nsolic = n_distinct(id),
+                  ncharlas = n()) %>%
+        arrange(com_autonoma)
+
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", ":", ":", round(colSums(tb[ , 4:5]), 0))
+
+kable(tb)
+
+```
+
+
+## Desglose por provincias
+
+
+### Número de centros y charlas
+
+```{r distribucion por provincias}
+
+tb <- solic %>%
+        group_by(provincia) %>%
+        summarise(ncentros = n_distinct(centro, codpostal),
+                  ncharlas = n()) %>% 
+        arrange(desc(ncentros))
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", round(colSums(tb[ , 2:3]), 0))
+
+kable(tb)
+
+```
+
+
+### Provincia y ciclo
+
+
+```{r distribucion por provincia y ciclo}
+
+tb <- solic %>%
+        group_by(provincia, ciclo) %>%
+        summarise(ncharlas = n()) %>%
+        arrange(provincia)
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", ":", round(colSums(tb[ , 3]), 0))
+
+kable(tb)
+
+```
+
+
+<!-- ### Provincia y videollamada -->
+
+<!-- ```{r provincia y videollamada} -->
+
+<!-- tb <- solic %>% -->
+<!--         group_by(provincia, videollamada) %>% -->
+<!--         summarise(nsolic = n_distinct(id), -->
+<!--                   ncharlas = n()) %>% -->
+<!--         arrange(provincia) -->
+
+<!-- tb[ dim(tb)[1]+1, ] <- c("Total", ":", round(colSums(tb[ , 3:4]), 0)) -->
+
+<!-- kable(tb) -->
+
+<!-- ``` -->
+
+
+### Provincia/inglés
+
+
+```{r provincia videollamada e ingles}
+
+tb <- solic %>%
+        # group_by(provincia, videollamada, ingles) %>%
+        group_by(provincia, ingles) %>%
+        summarise(nsolic = n_distinct(id),
+                  ncharlas = n()) %>%
+        arrange(provincia)
+
+# tb[ dim(tb)[1]+1, ] <- c("Total", ":", ":", round(colSums(tb[ , 4:5]), 0))
+
+kable(tb)
+
+```
+
