@@ -1,5 +1,7 @@
 ---
 pagetitle: "Charlas concertadas - listado"
+params:
+  id_sheet: NA
 output: 
   html_document: 
     theme: cerulean
@@ -62,15 +64,13 @@ opts_chunk$set(echo = FALSE, message = FALSE)
 ```
 
 ```{r}
-library(Rpkg11F)
+library(formularios11F)
 library(dplyr)
 ```
 
 ```{r}
 
-ID_SHEET_CONCERTADAS_LIMPIO <- params$id_sheets_googledrive$concertadas$limpio
-
-concertadas <- get_charlas_concertadas_limpio(file_id=ID_SHEET_CONCERTADAS_LIMPIO) %>% 
+concertadas <- get_charlas_concertadas_limpio(file_id=params$id_sheet) %>% 
   filter(procesado %in% c("OK", "CORREGIDO")) %>% 
   arrange(com_autonoma, provincia, localidad, centro, ponente)
 

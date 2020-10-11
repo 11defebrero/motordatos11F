@@ -1,5 +1,7 @@
 ---
 pagetitle: "Solicitudes - videollamada"
+params:
+  id_sheet: NA
 output: 
   html_document: 
     theme: cerulean
@@ -64,7 +66,7 @@ opts_chunk$set(echo = FALSE, message = FALSE)
 ```
 
 ```{r}
-library(Rpkg11F)
+library(formularios11F)
 library(dplyr)
 library(leaflet)
 library(DT)
@@ -72,9 +74,7 @@ library(DT)
 
 ```{r}
 
-ID_SHEET_SOLICITUDES_RESTANTES <- params$id_sheets_googledrive$solicitudes$restantes
-
-solicitudes <- get_solicitudes_charlas_limpio(file_id=ID_SHEET_SOLICITUDES_RESTANTES) %>% 
+solicitudes <- get_solicitudes_charlas_limpio(file_id=params$id_sheet) %>% 
   filter(procesado %in% c("OK", "CORREGIDO")) %>% 
   filter(videollamada == "Sí") %>% 
   arrange(com_autonoma, provincia, localidad)

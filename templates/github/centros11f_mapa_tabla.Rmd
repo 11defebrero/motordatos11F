@@ -1,5 +1,7 @@
 ---
 pagetitle: "Centros11F - mapa y tabla"
+params:
+  id_sheet: NA
 output: 
   html_document:
     theme: cerulean
@@ -68,7 +70,7 @@ opts_chunk$set(echo = FALSE, message = FALSE)
 ```
 
 ```{r}
-library(Rpkg11F)
+library(formularios11F)
 library(dplyr)
 library(leaflet)
 library(DT)
@@ -76,9 +78,7 @@ library(DT)
 
 ```{r}
 
-ID_SHEET_ACTIVIDADES_LIMPIO <- params$id_sheets_googledrive$actividades$limpio
-
-centros11f <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_LIMPIO) %>% 
+centros11f <- get_actividades_limpio(file_id=params$id_sheet) %>% 
   filter(clase_actividad == "CENTRO11F") %>% 
   filter(procesado %in% c("OK", "CORREGIDO", "REVISADO")) %>% 
   arrange(com_autonoma, provincia, localidad, centro)
