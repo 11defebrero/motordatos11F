@@ -15,7 +15,11 @@ knitr::opts_chunk$set(echo=FALSE)
 library(knitr)
   
 library(formularios11F)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
 library(stringr)
 library(data.table) 
 library(lubridate) 
@@ -116,7 +120,13 @@ tb <- solic %>%
         summarise(ncharlas = n()) # %>%
         # arrange(order(lista_ciclos))
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", round(colSums(tb[ , 2]), 0))
+totals <- tb %>% 
+  summarize(ciclo = "Total", 
+            ncharlas = sum(ncharlas) 
+            )
+
+tb <- rbind(tb, totals) %>%
+              arrange(ciclo)
 
 kable(tb)
 
@@ -131,7 +141,13 @@ tb <- solic %>%
         summarise(ncharlas = n()) # %>%
         # arrange(order(lista_niveles))
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", colSums(tb[ , 2]) )
+totals <- tb %>% 
+  summarize(nivel = "Total", 
+            ncharlas = sum(ncharlas) 
+            )
+
+tb <- rbind(tb, totals) 
+
 
 kable(tb)
 
@@ -161,7 +177,14 @@ tb <- solic %>%
         summarise(nsolic = n_distinct(id),
                   ncharlas = n())
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", ":", colSums(tb[ , 3:4]))
+totals <- tb %>% 
+  summarize(ingles = "Total", 
+            nsolic = sum(nsolic), 
+            ncharlas = sum(ncharlas) 
+            )
+
+tb <- rbind(tb, totals) %>%
+              arrange(ingles)
 
 kable(tb)
 
@@ -174,6 +197,8 @@ c1 <- c("Contenido científico", "Experiencias personales", "Científicas ilustr
 c2 <- c(sum(solic$tipo1), sum(solic$tipo2), sum(solic$tipo3) )
 tb <- cbind(c1, c2)
 colnames(tb)<- c("tipo", "ncharlas") 
+tb <- rbind(tb, data.frame( tipo = "Total", ncharlas = sum( as.integer( tb[ , 2] ) ) ) )
+
 kable(tb)
 
 ```
@@ -195,7 +220,12 @@ tb <- solic %>%
                ) %>%
         arrange(desc(ncentros))
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", round(colSums(tb[ , 2:5]), 0))
+tb <- rbind(tb, data.frame( com_autonoma = "Total", 
+                            ncentros = sum( tb[ , 2] ), 
+                            ncharlas = sum( tb[ , 3] ), 
+                            peso_centros = sum( tb[ , 4] ), 
+                            peso_charlas = sum( tb[ , 5] ) 
+                            ) )
 
 kable(tb)
 
@@ -211,8 +241,23 @@ tb <- solic %>%
         summarise(ncharlas = n()) %>%
         arrange(com_autonoma)
 
+totals <- tb %>% 
+  group_by(com_autonoma) %>% 
+  summarize(ciclo = "Subtotal", 
+            ncharlas = sum(ncharlas) 
+            )
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", ":", round(colSums(tb[ , 3]), 0))
+grandTotals <- totals %>% 
+  summarize(com_autonoma ="",
+            ciclo = "Total", 
+            ncharlas = sum(ncharlas) 
+            )
+
+totals <- rbind(tb, totals) %>%
+              arrange(com_autonoma, ciclo)
+
+#Binds grand total to frame
+tb <- rbind(totals, grandTotals) 
 
 kable(tb)
 
@@ -247,8 +292,24 @@ tb <- solic %>%
                   ncharlas = n()) %>%
         arrange(com_autonoma)
 
+totals <- tb %>% 
+  group_by(com_autonoma) %>% 
+  summarize(ingles = "Subtotal", 
+            nsolic = sum(nsolic),
+            ncharlas = sum(ncharlas) 
+            )
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", ":", ":", round(colSums(tb[ , 4:5]), 0))
+grandTotals <- totals %>% 
+  summarize(com_autonoma ="",
+            ingles = "Total", 
+            nsolic = sum(nsolic),
+            ncharlas = sum(ncharlas) 
+            )
+
+totals <- rbind(tb, totals) %>%
+              arrange(com_autonoma)
+
+tb <- rbind(totals, grandTotals) 
 
 kable(tb)
 
@@ -268,7 +329,13 @@ tb <- solic %>%
                   ncharlas = n()) %>% 
         arrange(desc(ncentros))
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", round(colSums(tb[ , 2:3]), 0))
+totals <- tb %>% 
+  summarize(provincia = "Total", 
+            ncentros = sum(ncentros),
+            ncharlas = sum(ncharlas) 
+            )
+
+tb <- rbind(tb, totals) 
 
 kable(tb)
 
@@ -285,7 +352,22 @@ tb <- solic %>%
         summarise(ncharlas = n()) %>%
         arrange(provincia)
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", ":", round(colSums(tb[ , 3]), 0))
+totals <- tb %>% 
+  group_by(provincia) %>% 
+  summarize(ciclo = "Subtotal", 
+            ncharlas = sum(ncharlas) 
+            )
+
+grandTotals <- totals %>% 
+  summarize(provincia ="",
+            ciclo = "Total", 
+            ncharlas = sum(ncharlas) 
+            )
+
+totals <- rbind(tb, totals) %>%
+              arrange(provincia)
+
+tb <- rbind(totals, grandTotals) 
 
 kable(tb)
 
@@ -321,7 +403,24 @@ tb <- solic %>%
                   ncharlas = n()) %>%
         arrange(provincia)
 
-# tb[ dim(tb)[1]+1, ] <- c("Total", ":", ":", round(colSums(tb[ , 4:5]), 0))
+totals <- tb %>% 
+  group_by(provincia) %>% 
+  summarize(ingles = "Subtotal", 
+            nsolic = sum(nsolic),
+            ncharlas = sum(ncharlas) 
+            )
+
+grandTotals <- totals %>% 
+  summarize(provincia = "", 
+            ingles = "Total",
+            nsolic = sum(nsolic),
+            ncharlas = sum(ncharlas) 
+            )
+
+tb <- rbind(tb, totals) %>%
+              arrange(provincia)
+
+tb <- rbind(tb, grandTotals) 
 
 kable(tb)
 
