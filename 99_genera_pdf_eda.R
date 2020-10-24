@@ -28,13 +28,13 @@ upload_file_to_drive(file.path(DIR_EDA_LOCAL, "resumen_solicitadas.pdf"), DIR_ED
 
 ## Contactos con los centros para concertar una charla
 
-rmarkdown::render(
-  input = "templates/eda/resumen_contactos.Rmd",
-  params = list(id_sheet_limpios = ID_SHEET_CONTACTOS_LIMPIO, 
-                id_sheet_enviado = ID_SHEET_CONTACTOS_ENVIADO),
-  output_file = "resumen_contactos.pdf",
-  output_dir = DIR_EDA_LOCAL,
-  quiet = TRUE
-)
-
-upload_file_to_drive(file.path(DIR_EDA_LOCAL, "resumen_contactos.pdf"), DIR_EDA_DRIVE)
+# rmarkdown::render(
+#   input = "templates/eda/resumen_contactos.Rmd",
+#   params = list(id_sheet_limpios = ID_SHEET_CONTACTOS_LIMPIO, 
+#                 id_sheet_enviado = ID_SHEET_CONTACTOS_ENVIADO),
+#   output_file = "resumen_contactos.pdf",
+#   output_dir = DIR_EDA_LOCAL,
+#   quiet = TRUE
+# )
+# 
+# upload_file_to_drive(file.path(DIR_EDA_LOCAL, "resumen_contactos.pdf"), DIR_EDA_DRIVE)
