@@ -1,0 +1,86 @@
+---
+title: "11F2021: resumen de los contactos con los centros"
+date: '`r format(Sys.Date(), "%d de %B de %Y")`'
+params:
+  id_sheet: NA
+output: 
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
+    number_sections: TRUE
+---
+
+```{r packages, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+library(formularios11F)
+library(dplyr, warn.conflicts = FALSE)
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+library(stringr)
+library(knitr)
+library(data.table)  
+library(Rpkg11F)
+library(lubridate)
+library(ggplot2)
+```
+
+```{r get data}
+contactos_limpio <- get_contactos_centros_limpio(file_id = params$id_sheet_limpio)
+contactados <- get_contactos_centros_limpio(file_id = params$id_sheet_enviado)
+```
+
+
+# Formularios
+```{r evo formularios de contacto}
+data <- contactos_limpio %>%
+  group_by(
+    dia = floor_date(timestamp, unit = "day"),
+    procesado
+  ) %>%
+  count()
+
+ggplot(data, aes(x = dia, y = n, fill = procesado)) +
+  geom_bar(stat = "identity") + 
+  labs(x = "Día", y = "Formularios de contacto")
+
+```
+
+
+## acumulado
+```{r evo formularios de contacto acu}
+data <- contactos_limpio %>%
+  group_by(
+    dia = floor_date(timestamp, unit = "day")
+  ) %>%
+  count()
+
+ggplot(data, aes(x = dia, y = cumsum(n))) +
+  geom_bar(stat = "identity") + 
+  labs(x = "Día", y = "Formularios de contacto (acumulado)")
+
+```
+
+# Procesado y envío de correos
+```{r correos enviados}
+contactados$procesado <- as.Date(contactados$procesado, "%d/%m/%Y")
+data <- contactados %>%
+  group_by(
+    dia = floor_date(procesado, unit = "day")
+  ) %>%
+  count()
+
+ggplot(data, aes(x = dia, y = n)) +
+  geom_bar(stat = "identity") + 
+  labs(x = "Día", y = "Correos enviados")
+```
+
+## acumulado
+```{r}
+ggplot(data, aes(x = dia, y = cumsum(n))) +
+  geom_bar(stat = "identity") + 
+  labs(x = "Día", y = "Correos enviados (acumulado)")
+```
+
+
