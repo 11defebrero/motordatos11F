@@ -61,6 +61,7 @@ ggplot(nsolicitudes, aes(x=dia, y=cumsum(n), label=cumsum(n))) +
 
 
 ### Número de centros, solicitudes (formularios enviados) y charlas
+
 ```{r ncentros nsolic y ncharlas}
 
 ncentros <- dim(unique(solic[ , c("centro", "codpostal")]))[1]
@@ -72,18 +73,22 @@ lista_niveles <- c("Infantil 3 años", "Infantil 4 años", "Infantil 5 años",
                     "1º ESO", "2º ESO", "3º ESO", "4º ESO",
                     "1º Bachillerato", "2º Bachillerato",
                     "Formación profesional", "Adultos", "Otros"
-                  )
+                   )
 
 lista_ciclos <- c("Infantil", "Primaria", "ESO", "Bachillerato", 
                   "Formación profesional", "Adultos", "Otros"
                   )
 
-lista_tipos <- tipo <- c("Charla de contenido científico", 
-                          "Experiencias de científicas", 
-                          "La historia de científicas ilustres"
-                        )
+lista_tipos <- c("Charla de contenido científico", 
+                 "Experiencias de científicas", 
+                 "La historia de científicas ilustres"
+                  )
+
+lista_herramientas <- c("GSuite","Meet","Moodel", "Skype", 
+                        "Teams", "Webex", "Zoom", "Otras")
 
 data <- NULL ; data0 <- NULL
+
 for (i in 1:length(lista_niveles)){
   data <- solic %>% 
           filter(niveles %like% lista_niveles[i]) %>%
@@ -91,17 +96,26 @@ for (i in 1:length(lista_niveles)){
   data0 <- rbind(data, data0)
 }
 data0$niveles <- NULL ; solic <- data0 ; data <- NULL ; data0 <- NULL
+
 for (i in 1:length(lista_ciclos)){
   data <- solic %>% 
           filter(nivel %like% lista_ciclos[i]) %>%
           mutate(ciclo = lista_ciclos[i])
   data0 <- rbind(data, data0)
 }
+solic <- data0 ; data <- NULL ; data0 <- NULL
 
+for (i in 1:length(lista_herramientas)){
+  data <- solic %>% 
+          filter(herramientas_online %like% lista_herramientas[i]) %>%
+          mutate(herramienta = lista_herramientas[i])
+  data0 <- rbind(data, data0)
+}
 solic <- data0 ; rm(data) ; rm(data0)
-solic$tipo1 <- solic$tipos %like% tipo[1]
-solic$tipo2 <- solic$tipos %like% tipo[2]
-solic$tipo3 <- solic$tipos %like% tipo[3]
+
+solic$tipo1 <- solic$tipos %like% lista_tipos[1]
+solic$tipo2 <- solic$tipos %like% lista_tipos[2]
+solic$tipo3 <- solic$tipos %like% lista_tipos[3]
 solic$tipos <- NULL
 
 ncharlas <- dim(solic)[1]
@@ -152,6 +166,28 @@ tb <- rbind(tb, totals)
 kable(tb)
 
 ```
+
+### Herramientas online
+
+```{r distribucion por herramientas online}
+
+tb <- solic %>%
+        group_by(herramienta) %>%
+        summarise(ncharlas = n()) %>%
+        arrange(desc(ncharlas))
+
+totals <- tb %>% 
+  summarize(herramienta = "Total", 
+            ncharlas = sum(ncharlas) 
+            )
+
+tb <- rbind(tb, totals) 
+
+
+kable(tb)
+
+```
+
 
 <!-- ### Solicitudes que aceptan videollamada -->
 
