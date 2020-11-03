@@ -34,7 +34,8 @@ solicitudes_corregidas <- solicitudes_limpio %>%
   )
 
 solicitudes_new <- solicitudes_new %>%
-  rbind(solicitudes_corregidas)
+  rbind(solicitudes_corregidas) %>%
+  arrange(timestamp)
 
 solicitudes_limpio <- solicitudes_limpio %>%
   filter(! id %in% solicitudes_corregidas$id)
@@ -64,7 +65,17 @@ solicitudes_new <- geolocaliza_solicitudes_charlas(solicitudes_new) %>%
 
 solicitudes_limpio <- solicitudes_limpio %>%
   rbind(solicitudes_new) %>%
-  marca_duplicados_solicitudes_charlas()
+  marca_duplicados_solicitudes_charlas() %>%
+  mutate(
+    procesado = case_when(
+      duplicado_seguro ~ "DUPLICADO",
+      duplicado_posible & procesado == "OK" ~ "POSIBLE DUPLICADO (EMAIL)",
+      duplicado_posible & procesado != "OK" ~ paste("POSIBLE DUPLICADO (EMAIL) +", procesado),
+      TRUE ~ procesado
+    ),
+    duplicado_posible = NULL,
+    duplicado_seguro = NULL
+  )
 
 
 # Restaurar estado en las charlas corregidas
