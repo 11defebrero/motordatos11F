@@ -47,14 +47,19 @@ solic <- get_solicitudes_charlas_limpio(file_id=params$id_sheet) %>%
 nsolicitudes <- solic %>%
   count(
     dia = floor_date(timestamp, unit="day")
+  ) %>%
+  mutate(
+    total = cumsum(n)
   )
 
 ggplot(nsolicitudes, aes(x=dia, y=n, label=n)) +
-  geom_bar(stat="identity") + geom_text(vjust=2, color="white") +
+  geom_bar(stat="identity") +
+  geom_text(vjust=1.5, color="white", size=3) +
   labs(x="Día", y="Nº solicitudes")
 
-ggplot(nsolicitudes, aes(x=dia, y=cumsum(n), label=cumsum(n))) +
-  geom_bar(stat="identity") + geom_text(vjust=2, color="white") +
+ggplot(nsolicitudes, aes(x=dia, y=total, label=total)) +
+  geom_bar(stat="identity") +
+  geom_text(data=~tail(.x, 1), vjust=-0.3, color="black") +
   labs(x="Día", y="Nº solicitudes (acumulado)")
 
 ```
