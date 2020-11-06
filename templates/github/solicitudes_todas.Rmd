@@ -82,12 +82,12 @@ for (i in 1:nrow(solicitudes)) {
   
   cat("\n\n-------------\n\n")
   cat(texto_solicitud_charla(solicitudes[i,]))
-  # cat(html_link(
-  #   texto="**>> CONTACTAR CON EL CENTRO <<**",
-  #   url=paste0("https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform",
-  #              "?entry.212353241=", solicitudes$id[i]),
-  #   new_tab=TRUE
-  # ))
+   cat(html_link(
+     texto="**>> CONTACTAR CON EL CENTRO <<**",
+     url=paste0("https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform",
+                "?entry.212353241=", solicitudes$id[i]),
+     new_tab=TRUE
+   ))
   cat("<br/>")
   
 }
