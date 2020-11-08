@@ -2,6 +2,7 @@
 pagetitle: "Solicitudes - listado"
 params:
   id_sheet: NA
+  id_form_contacto: NA
 output: 
   html_document: 
     theme: cerulean
@@ -9,7 +10,7 @@ output:
 ---
 
 
-![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+[![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)](https://11defebrero.org/)
 
 
 <style type="text/css">
@@ -57,9 +58,19 @@ Hay `r nrow(solicitudes)` solicitudes en total.
 
 Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
 
-<!-- Una vez seleccionado el centro, rellena [este formulario](https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform) para que os pongamos en contacto y podáis concertar la charla. -->
+```{r results='asis'}
+cat(
+  "Una vez seleccionado el centro, rellena",
+  html_link(
+     texto="este formulario",
+     url=paste0("https://docs.google.com/forms/d/e/", params$id_form_contacto, "/viewform"),
+     new_tab=TRUE
+   ), 
+   "para que os pongamos en contacto y podáis concertar la charla."
+)
+```
 
-<!-- Una vez concertada la charla, por favor, envíanos la información en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad) -->
+<!-- Una vez concertada la charla, por favor, envíanos la información en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad). -->
 
 <!-- En [este enlace](concertadas_mapa_tabla.html) podéis ver todas las charlas concertadas hasta el momento. -->
 
@@ -84,7 +95,7 @@ for (i in 1:nrow(solicitudes)) {
   cat(texto_solicitud_charla(solicitudes[i,]))
    cat(html_link(
      texto="**>> CONTACTAR CON EL CENTRO <<**",
-     url=paste0("https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform",
+     url=paste0("https://docs.google.com/forms/d/e/", params$id_form_contacto, "/viewform",
                 "?entry.212353241=", solicitudes$id[i]),
      new_tab=TRUE
    ))

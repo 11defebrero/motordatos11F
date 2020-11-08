@@ -2,6 +2,7 @@
 pagetitle: "Solicitudes - mapa y tabla"
 params:
   id_sheet: NA
+  id_form_contacto: NA
 output: 
   html_document: 
     theme: cerulean
@@ -9,7 +10,7 @@ output:
 ---
 
 
-![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)
+[![](https://raw.githubusercontent.com/11defebrero/assets/main/images/banner11F.png)](https://11defebrero.org/)
 
 
 <style type="text/css">
@@ -61,7 +62,17 @@ Hay `r nrow(solicitudes)` solicitudes en total.
 
 Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
 
-<!-- Una vez seleccionado el centro, rellena [este formulario](https://docs.google.com/forms/d/e/1FAIpQLSeRsopW6HNOvJ47sUP5hYZN3qS78iVDhpDZkxVnIoQWH-GpyA/viewform) para entablar contacto con el centro y que podáis concertar la charla.  -->
+```{r results='asis'}
+cat(
+  "Una vez seleccionado el centro, rellena",
+  html_link(
+     texto="este formulario",
+     url=paste0("https://docs.google.com/forms/d/e/", params$id_form_contacto, "/viewform"),
+     new_tab=TRUE
+   ), 
+   "para que os pongamos en contacto y podáis concertar la charla."
+)
+```
 
 <!-- Una vez concertada la charla, por favor, envíanos la información de esta en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad) -->
 
