@@ -68,9 +68,10 @@ solicitudes_limpio <- solicitudes_limpio %>%
   marca_duplicados_solicitudes_charlas() %>%
   mutate(
     procesado = case_when(
+      procesado == "CORREGIDO" ~ "CORREGIDO",
       duplicado_seguro ~ "DUPLICADO",
       duplicado_posible & procesado == "OK" ~ "POSIBLE DUPLICADO (EMAIL)",
-      duplicado_posible & procesado != "OK" ~ paste("POSIBLE DUPLICADO (EMAIL) +", procesado),
+      duplicado_posible & grepl("FALLO", procesado) ~ paste("POSIBLE DUPLICADO (EMAIL) +", procesado),
       TRUE ~ procesado
     ),
     duplicado_posible = NULL,
