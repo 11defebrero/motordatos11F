@@ -10,8 +10,8 @@ source("1_procesa_solicitudes_charlas.R", encoding = "UTF-8")
 
 # Peticiones de contacto con centros
 
-# source("2a_procesa_contactos_centros.R", encoding = "UTF-8")
-# source("2b_envia_emails_contacto.R", encoding = "UTF-8")
+source("2a_procesa_contactos_centros.R", encoding = "UTF-8")
+source("2b_envia_emails_contacto.R", encoding = "UTF-8")
 
 
 # Charlas concertadas
