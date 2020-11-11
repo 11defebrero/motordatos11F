@@ -2,6 +2,12 @@
 ##  MOTOR DATOS 11F  ##
 #######################
 
+# Opcional
+
+devtools::install_github("11defebrero/formularios11F")
+
+googledrive::drive_auth()
+
 
 # Charlas solicitadas
 
