@@ -89,7 +89,7 @@ lista_tipos <- c("Charla de contenido científico",
                  "La historia de científicas ilustres"
                   )
 
-lista_herramientas <- c("GSuite","Meet","Moodel", "Skype", 
+lista_herramientas <- c("GSuite","Meet","Moodle", "Skype", 
                         "Teams", "Webex", "Zoom", "Otras")
 
 data <- NULL ; data0 <- NULL
