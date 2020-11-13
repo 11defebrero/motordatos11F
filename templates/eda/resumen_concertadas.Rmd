@@ -1,0 +1,273 @@
+---
+title: "Resumen charlas concertadas en centros educativos"
+date: '`r format(Sys.Date(), "%d de %B de %Y")`'
+params:
+  id_sheet: NA
+output: 
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
+    number_sections: TRUE
+---
+
+```{r packages, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+library(knitr)
+  
+library(formularios11F)
+library(dplyr, warn.conflicts = FALSE)
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
+library(stringr)
+library(data.table) 
+library(lubridate) 
+library(ggplot2)
+```
+
+
+```{r carga datos, include=FALSE}
+charlas <- get_charlas_concertadas_limpio(file_id=params$id_sheet) %>% 
+  filter(procesado %in% c("OK", "CORREGIDO"))
+
+```
+
+
+# Datos globales
+
+## Envíos diarios
+
+```{r grafico evolucion}
+charlas$date <- as.Date(substr(charlas$timestamp, 1, 11))
+plot(table(charlas$date), type = "h", lwd = 2, xlab = "fecha", ylab = "Charlas concertadas")
+kable(table(charlas$date))
+```
+
+---------------------------------------------------
+
+## Número de centros, ponentes, instituciones, charlas y alumnos
+```{r ncentros nponentes ncharlas nalumnos}
+
+nCentros   <- dim(unique(charlas[ , c("centro", "codpostal")]))[1]
+nPonentes  <- dim(unique(charlas[ , "email_ponente"]))[1] # revisar porque en algunas filas hay más de uno
+nInst      <- dim(unique(charlas[ , "institucion_ponente"]))[1]
+nCharlas   <- sum(charlas$n_charlas)
+nAlumnos   <- sum(charlas$n_alumnos)
+
+tb <- charlas %>%
+        summarise(nCentros, nPonentes, nInst, nCharlas, nAlumnos)
+
+kable(tb)
+```
+
+```{r tipo de charla}
+tb <- charlas %>%
+  group_by(tipo_charla) %>%
+  summarise(num_de_charlas = sum(n_charlas))
+
+kable(tb)
+
+```
+
+```{r niveles y ciclos}
+
+lista_niveles <- c("Infantil 3 años", "Infantil 4 años", "Infantil 5 años", 
+                    "1º Primaria", "2º Primaria", "3º Primaria", 
+                    "4º Primaria", "5º Primaria", "6º Primaria", 
+                    "1º ESO", "2º ESO", "3º ESO", "4º ESO",
+                    "1º Bachillerato", "2º Bachillerato",
+                    "Formación profesional", "Adultos", "Otros"
+                  )
+
+lista_ciclos <- c("Infantil", "Primaria", "ESO", "Bachillerato", 
+                  "Formación profesional", "Adultos", "Otros"
+                  )
+
+# Niveles
+
+# n <- length(charlas)
+# for (i in 1:length(lista_niveles)){
+#   charlas[ , n+i] <- charlas$niveles %like% lista_niveles[i]
+#   colnames(charlas)[n+i] <- lista_niveles[i]
+# }
+# 
+# names(charlas[ , (n+1):(n+length(lista_niveles))] ) <- lista_niveles
+
+data <- NULL ; data0 <- NULL
+
+for (i in 1:length(lista_niveles)){
+  data <- charlas %>% 
+          filter(niveles %like% lista_niveles[i]) %>%
+          mutate(nivel = lista_niveles[i])
+  data0 <- rbind(data, data0)
+}
+
+charlas_n <- data0 ; data <- NULL ; data0 <- NULL
+
+for (i in 1:length(lista_ciclos)){
+  data <- charlas %>% 
+          filter(niveles %like% lista_ciclos[i]) %>%
+          mutate(ciclo = lista_ciclos[i])
+  data0 <- rbind(data, data0)
+}
+
+charlas_c <- data0 ; rm(data) ; rm(data0)
+
+```
+
+## Por ciclo
+
+El total no coincide con el total de charlas porque hay charlas que incluyen varios ciclos y se cuentan varias veces en este total. 
+Por ejemplo, una charla para alumnos de 2 ciclos distitntos aquí cuenta como 2 charlas.
+
+```{r distribucion por ciclos}
+tb <- charlas_c %>%
+        group_by(ciclo) %>%
+        summarise(num_de_charlas = sum(n_charlas)) %>% 
+        arrange(desc(num_de_charlas))
+
+totals <- tb %>% 
+  summarize(ciclo = "Total", 
+            num_de_charlas = sum(num_de_charlas) 
+            )
+
+tb <- rbind(tb, totals)
+
+kable(tb)
+
+```
+
+## Por nivel
+
+El total no coincide con el total de charlas porque hay charlas que incluyen varios niveles y se cuentan varias veces en este total.
+Por ejemplo, una charla para alumnos de 3 niveles aquí cuenta como 3 charlas.
+
+```{r distribucion por niveles}
+
+tb <- charlas_n %>%
+        group_by(nivel) %>%
+        summarise(num_de_charlas = sum(n_charlas)) %>% 
+        arrange(desc(num_de_charlas))
+
+totals <- tb %>% 
+  summarize(nivel = "Total", 
+            num_de_charlas = sum(num_de_charlas) 
+            )
+
+tb <- rbind(tb, totals)
+
+kable(tb)
+
+```
+
+# Desglose por comunidades autónomas
+
+## Número de centros, ponentes, charlas y alumnos
+
+```{r distribucion por comunidades}
+tb <- charlas %>%
+        group_by(com_autonoma) %>%
+        summarise(nCentros = n_distinct(centro, codpostal),
+                  nPonentes = n_distinct(email_ponente),
+                  nInst = n_distinct(institucion_ponente),
+                  nCharlas = sum(n_charlas),
+                  nAlumnos = sum(n_alumnos)
+                  ) %>% 
+        mutate(peso_centros = round(nCentros / sum(nCentros) * 100, 1), 
+               peso_ponentes = round(nPonentes / sum(nPonentes) * 100, 1),
+               peso_inst = round(nInst / sum(nInst) * 100, 1),
+               peso_charlas = round(nCharlas / sum(nCharlas) * 100, 1),
+               peso_alumnos = round(nAlumnos / sum(nAlumnos) * 100, 1)
+               ) %>%
+        arrange(com_autonoma)
+
+
+kable(tb)
+
+```
+
+
+```{r distribucion videollamadas por comunidad}
+tb <- charlas %>%
+        filter(tipo_charla=="Videollamada") %>%
+        group_by(com_autonoma, provincia) %>%
+        summarise(nCentros = n_distinct(centro, codpostal),
+                  nPonentes = n_distinct(email_ponente),
+                  nInst = n_distinct(institucion_ponente),
+                  nCharlas = sum(n_charlas),
+                  nAlumnos = sum(n_alumnos)
+                  ) %>% 
+        mutate(peso_centros = round(nCentros / sum(nCentros) * 100, 1), 
+               peso_ponentes = round(nPonentes / sum(nPonentes) * 100, 1),
+               peso_inst = round(nInst / sum(nInst) * 100, 1),
+               peso_charlas = round(nCharlas / sum(nCharlas) * 100, 1),
+               peso_alumnos = round(nAlumnos / sum(nAlumnos) * 100, 1)
+               ) %>%
+        arrange(com_autonoma)
+
+
+kable(tb)
+
+```
+
+
+
+## Por ciclo
+
+```{r distribucion por comunidades y ciclos}
+
+tb <- charlas_c %>%
+        group_by(com_autonoma, ciclo) %>%
+        summarise(ncharlas = sum(n_charlas)) %>%
+        arrange(com_autonoma)
+
+
+
+kable(tb)
+
+```
+
+
+# Desglose por provincias
+
+## Número de centros, ponentes, charlas y alumnos
+
+Hay ponentes que están en más de una provincia por eso el total de ponentes e instituciones es mayor que en el total global. Es decir, hay ponentes que cuentan por más de uno porque el mismo está en más de una provincia.
+
+```{r distribucion por provincias}
+tb <- charlas %>%
+        group_by(provincia) %>%
+        summarise(nCentros = n_distinct(centro, codpostal),
+                  nPonentes = n_distinct(email_ponente),
+                  nInst = n_distinct(institucion_ponente),
+                  nCharlas = sum(n_charlas),
+                  nAlumnos = sum(n_alumnos)
+                  ) %>% 
+        mutate(peso_centros = round(nCentros / sum(nCentros) * 100, 1), 
+               peso_ponentes = round(nPonentes / sum(nPonentes) * 100, 1),
+               peso_inst = round(nInst / sum(nInst) * 100, 1),
+               peso_charlas = round(nCharlas / sum(nCharlas) * 100, 1),
+               peso_alumnos = round(nAlumnos / sum(nAlumnos) * 100, 1)
+               ) %>%
+        arrange(provincia)
+
+
+kable(tb)
+
+```
+
+
+## Por ciclo
+
+
+```{r distribucion por provincia y ciclo}
+
+tb <- charlas_c %>%
+        group_by(provincia, ciclo) %>%
+        summarise(ncharlas = sum(n_charlas)) %>%
+        arrange(provincia)
+
+kable(tb)
+
+```

@@ -2,7 +2,8 @@
 title: "11F2021: resumen de los contactos con los centros"
 date: '`r format(Sys.Date(), "%d de %B de %Y")`'
 params:
-  id_sheet: NA
+  id_sheet_limpios: NA
+  id_sheet_enviado: NA
 output: 
   pdf_document:
     toc: TRUE
@@ -14,20 +15,19 @@ output:
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
+library(knitr)
 library(formularios11F)
 library(dplyr, warn.conflicts = FALSE)
 # Suppress summarise info
 options(dplyr.summarise.inform = FALSE)
 library(stringr)
-library(knitr)
-library(data.table)  
-library(Rpkg11F)
+library(data.table)
 library(lubridate)
 library(ggplot2)
 ```
 
 ```{r get data}
-contactos_limpio <- get_contactos_centros_limpio(file_id = params$id_sheet_limpio)
+contactos_limpio <- get_contactos_centros_limpio(file_id = params$id_sheet_limpios)
 contactados <- get_contactos_centros_limpio(file_id = params$id_sheet_enviado)
 ```
 
