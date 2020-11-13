@@ -83,4 +83,3 @@ rmarkdown::render(
 )
 browseURL("eda/Resumen_concertadas.html")
 # “default”, “cerulean”, “journal”, “flatly”, “darkly”, “readable”, “spacelab”, “united”, “cosmo”, “lumen”, “paper”, “sandstone”, “simplex”, “yeti”
-

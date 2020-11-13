@@ -22,8 +22,8 @@ source("2b_envia_emails_contacto.R", encoding = "UTF-8")
 
 # Charlas concertadas
 
-# source("3a_procesa_charlas_concertadas.R", encoding = "UTF-8")
-# source("3b_actualiza_solicitudes_charlas_restantes.R", encoding = "UTF-8")
+source("3a_procesa_charlas_concertadas.R", encoding = "UTF-8")
+source("3b_actualiza_solicitudes_charlas_restantes.R", encoding = "UTF-8")
 
 
 # Actividades
