@@ -47,21 +47,21 @@ rmarkdown::render(
   quiet = TRUE
 )
 
-# Sys.sleep(5)
-#
-#
-# ## Charlas concertadas
-#
-# rmarkdown::render(
-#   encoding = "UTF-8",
-#   input = "templates/github/concertadas_todas.Rmd",
-#   params = list(id_sheet = ID_SHEET_CONCERTADAS_LIMPIO),
-#   output_file = "concertadas_todas.html",
-#   output_dir = DIR_WEB,
-#   output_options = list(lib_dir = DIR_WEB_LIBS),
-#   quiet = TRUE
-# )
-#
+Sys.sleep(5)
+
+
+## Charlas concertadas
+
+rmarkdown::render(
+  encoding = "UTF-8",
+  input = "templates/github/concertadas_todas.Rmd",
+  params = list(id_sheet = ID_SHEET_CONCERTADAS_LIMPIO),
+  output_file = "concertadas_todas.html",
+  output_dir = DIR_WEB,
+  output_options = list(lib_dir = DIR_WEB_LIBS),
+  quiet = TRUE
+)
+
 # Sys.sleep(5)
 #
 # rmarkdown::render(
