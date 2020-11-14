@@ -62,18 +62,18 @@ rmarkdown::render(
   quiet = TRUE
 )
 
-# Sys.sleep(5)
-#
-# rmarkdown::render(
-#   encoding = "UTF-8",
-#   input = "templates/github/concertadas_mapa_tabla.Rmd",
-#   params = list(id_sheet = ID_SHEET_CONCERTADAS_LIMPIO),
-#   output_file = "concertadas_mapa_tabla.html",
-#   output_dir = DIR_WEB,
-#   output_options = list(lib_dir = DIR_WEB_LIBS),
-#   quiet = TRUE
-# )
-#
+Sys.sleep(5)
+
+rmarkdown::render(
+  encoding = "UTF-8",
+  input = "templates/github/concertadas_mapa_tabla.Rmd",
+  params = list(id_sheet = ID_SHEET_CONCERTADAS_LIMPIO),
+  output_file = "concertadas_mapa_tabla.html",
+  output_dir = DIR_WEB,
+  output_options = list(lib_dir = DIR_WEB_LIBS),
+  quiet = TRUE
+)
+
 # Sys.sleep(5)
 #
 #
