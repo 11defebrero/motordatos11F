@@ -266,22 +266,18 @@ tb <- charlas %>%
                ) %>%
         arrange(provincia)
 
-totals <- tb %>% 
-  group_by(provincia) %>% 
-  summarize(provincia = "Total", 
-            nCentros = sum(nCentros),
-            nPonentes = sum(nPonentes),
-            nInst = sum(nInst),
-            nCharlas = sum(nCharlas),
-            nAlumnos = sum(nAlumnos),
-            peso_centros = sum(peso_centros),
-            peso_ponentes = sum(peso_ponentes),
-            peso_inst = sum(peso_inst),
-            peso_charlas = sum(peso_charlas),
-            peso_alumnos = sum(peso_alumnos)
-            )
-
-tb <- rbind(tb, totals) 
+tb <- rbind(tb, data.frame( provincia = "Total", 
+                            nCentros = sum( tb[ , 2] ), 
+                            nPonentes = sum(tb[ , 3] ),
+                            nInst = sum(tb[ , 4]),
+                            nCharlas = sum( tb[ , 5] ),
+                            nAlumnos = sum(tb[ , 6]),
+                            peso_centros = sum( tb[ , 7] ), 
+                            peso_ponentes = sum(tb[ , 8] ),
+                            peso_inst = sum( tb[ , 9] ),
+                            peso_charlas = sum( tb[ , 10] ),
+                            peso_alumnos = sum( tb[ , 11] ) 
+                            ) )
 
 kable(tb)
 
