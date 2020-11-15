@@ -89,8 +89,9 @@ lista_tipos <- c("Charla de contenido científico",
                  "La historia de científicas ilustres"
                   )
 
-lista_herramientas <- c("GSuite","Meet","Moodle", "Skype", 
-                        "Teams", "Webex", "Zoom", "Otras")
+lista_herramientas <- c("Skype", "Zoom", "Webex", "Microsoft Teams",
+                        "Google Meet", "Jitsi", "Moodle BB Collaborate", "Otras"
+                        )
 
 data <- NULL ; data0 <- NULL
 
@@ -100,6 +101,7 @@ for (i in 1:length(lista_niveles)){
           mutate(nivel = lista_niveles[i])
   data0 <- rbind(data, data0)
 }
+
 data0$niveles <- NULL ; solic <- data0 ; data <- NULL ; data0 <- NULL
 
 for (i in 1:length(lista_ciclos)){
@@ -108,6 +110,7 @@ for (i in 1:length(lista_ciclos)){
           mutate(ciclo = lista_ciclos[i])
   data0 <- rbind(data, data0)
 }
+
 solic <- data0 ; data <- NULL ; data0 <- NULL
 
 for (i in 1:length(lista_herramientas)){
@@ -116,6 +119,7 @@ for (i in 1:length(lista_herramientas)){
           mutate(herramienta = lista_herramientas[i])
   data0 <- rbind(data, data0)
 }
+
 solic <- data0 ; rm(data) ; rm(data0)
 
 solic$tipo1 <- solic$tipos %like% lista_tipos[1]
@@ -188,9 +192,7 @@ totals <- tb %>%
 
 tb <- rbind(tb, totals) 
 
-
 kable(tb)
-
 ```
 
 
