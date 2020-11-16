@@ -6,13 +6,14 @@ library(dplyr)
 
 config <- leer_config("config/config.json")
 
+ID_SHEET_SOLICITUDES_LIMPIO <- config$ids_googledrive$solicitudes$limpio
 ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$restantes
 ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
 
 
 # Descargar listados de solicitudes y de concertadas
 
-solicitudes_restantes <- get_solicitudes_charlas_limpio(file_id=ID_SHEET_SOLICITUDES_RESTANTES)
+solicitudes_restantes <- get_solicitudes_charlas_limpio(file_id=ID_SHEET_SOLICITUDES_LIMPIO)
 
 concertadas <- get_charlas_concertadas_limpio(file_id=ID_SHEET_CONCERTADAS_LIMPIO) %>%
   filter(es_charla_solicitada == "Sí" & procesado %in% c("OK", "CORREGIDO"))
