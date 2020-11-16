@@ -64,22 +64,3 @@ charlas_limpio <- charlas_limpio %>%
 # Subir a Google Drive
 
 upload_charlas_concertadas_limpio(charlas_limpio, file_id=ID_SHEET_CONCERTADAS_LIMPIO)
-
-
-# Generar resumen
-
-rmarkdown::render(
-  input = "templates/eda/Resumen_concertadas.Rmd",
-  output_file = "eda/Resumen_concertadas.html",
-  output_dir =  "eda",
-  output_format = rmarkdown::html_document(self_contained = T,
-                                           toc = T,
-                                           toc_depth = 3,
-                                           toc_float = T,
-                                           number_sections = T,
-                                           section_divs = T,
-                                           theme = "spacelab"),
-  quiet = TRUE
-)
-browseURL("eda/Resumen_concertadas.html")
-# “default”, “cerulean”, “journal”, “flatly”, “darkly”, “readable”, “spacelab”, “united”, “cosmo”, “lumen”, “paper”, “sandstone”, “simplex”, “yeti”
