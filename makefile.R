@@ -11,7 +11,7 @@ googledrive::drive_auth()
 
 # Charlas solicitadas
 
-# source("1_procesa_solicitudes_charlas.R", encoding = "UTF-8")
+source("1_procesa_solicitudes_charlas.R", encoding = "UTF-8")
 
 
 # Peticiones de contacto con centros
