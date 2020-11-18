@@ -65,23 +65,3 @@ actividades_limpio <- actividades_limpio %>%
 # Subir a Google Drive
 
 upload_actividades_limpio(actividades_limpio, file_id=ID_SHEET_ACTIVIDADES_LIMPIO)
-
-
-# Generar resumen
-
-rmarkdown::render(
-  input = "templates/eda/Resumen_actividades.Rmd",
-  output_file = "eda/Resumen_actividades.html",
-  output_dir =  "eda",
-  output_format = rmarkdown::html_document(self_contained = T,
-                                           toc = T,
-                                           toc_depth = 3,
-                                           toc_float = T,
-                                           number_sections = T,
-                                           section_divs = T,
-                                           theme = "spacelab"),
-  quiet = T
-)
-browseURL("eda/Resumen_actividades.html")
-# “default”, “cerulean”, “journal”, “flatly”, “darkly”, “readable”, “spacelab”, “united”, “cosmo”, “lumen”, “paper”, “sandstone”, “simplex”, “yeti”
-

@@ -17,6 +17,7 @@ ID_SHEET_CONTACTOS_ENVIADO <- config$ids_googledrive$contactos$enviado
 
 ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
 
+ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
 
 # Solicitudes charlas
 
@@ -56,4 +57,16 @@ rmarkdown::render(
 )
 
 upload_file_to_drive(file.path(DIR_EDA_LOCAL, "resumen_concertadas.pdf"), DIR_EDA_DRIVE)
+
+# Actividades
+
+rmarkdown::render(
+  input = "templates/eda/resumen_actividades.Rmd",
+  params = list(id_sheet = ID_SHEET_ACTIVIDADES_LIMPIO),
+  output_file = "resumen_actividades.pdf",
+  output_dir = DIR_EDA_LOCAL,
+  quiet = TRUE
+)
+
+upload_file_to_drive(file.path(DIR_EDA_LOCAL, "resumen_actividades.pdf"), DIR_EDA_DRIVE)
 

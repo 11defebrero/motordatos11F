@@ -44,4 +44,3 @@ for (i in ind_actividades_revisar) {
 # Subir a Google Drive
 
 upload_actividades_limpio(actividades_wordpress, file_id=ID_SHEET_ACTIVIDADES_WORDPRESS)
-

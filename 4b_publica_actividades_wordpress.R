@@ -24,7 +24,6 @@ options(
 
 ## Cargar datos limpios
 
-
 actividades_limpio <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_LIMPIO) %>%
   filter(clase_actividad %in% c("PRESENCIAL", "NO PRESENCIAL")) %>%
   filter(procesado %in% c("OK", "CORREGIDO"))
