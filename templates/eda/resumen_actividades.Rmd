@@ -1,0 +1,121 @@
+---
+title: "Resumen charlas concertadas en centros educativos"
+date: '`r format(Sys.Date(), "%d de %B de %Y")`'
+params:
+  id_sheet: NA
+output: 
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
+    number_sections: TRUE
+---
+
+```{r packages, include = FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+library(knitr)
+  
+library(formularios11F)
+library(dplyr, warn.conflicts = FALSE)
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
+library(stringr)
+library(data.table) 
+# library(lubridate) 
+# library(ggplot2)
+```
+
+```{r carga datos, include=FALSE}
+actividades <- get_actividades_limpio(file_id=params$id_sheet)
+
+actividades <- actividades[actividades$procesado == "CORREGIDO" | actividades$procesado == "OK", ]
+actividades_centros <- actividades[actividades$clase_actividad == "CENTRO11F", ]
+actividades_p <- actividades[actividades$clase_actividad == "PRESENCIAL", ]
+actividades_np <- actividades[actividades$clase_actividad == "NO PRESENCIAL", ]
+```
+
+# Datos globales
+
+## Envíos diarios
+
+```{r grafico evolucion}
+actividades$date <- as.Date(substr(actividades$timestamp, 1, 11))
+kable(table(actividades$date))
+plot(table(actividades$date), type = "h", lwd = 2, xlab = "fecha", ylab = "Actividades programadas")
+```
+
+
+## Datos por tipo de actividad
+
+```{r}
+tb <- actividades %>%
+        group_by(clase_actividad) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal))
+kable(tb)
+```
+
+# Por comunidad
+
+## Actividades en centros educativos
+
+```{r}
+tb <- actividades_centros %>%
+        group_by(com_autonoma) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal)) %>%
+        arrange(com_autonoma)
+kable(tb)
+```
+
+## Otras actividades presenciales
+
+```{r}
+tb <- actividades_p %>%
+        group_by(com_autonoma) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal)) %>%
+        arrange(com_autonoma)
+kable(tb)
+```
+
+## Otras actividades no presenciales
+
+```{r}
+tb <- actividades_np %>%
+        group_by(com_autonoma) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal)) %>%
+        arrange(com_autonoma)
+kable(tb)
+```
+
+# Por provincia
+
+## Actividades en centros educativos
+
+```{r}
+tb <- actividades_centros %>%
+        group_by(provincia) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal)) %>%
+        arrange(provincia)
+kable(tb)
+```
+
+## Otras actividades presenciales
+
+```{r}
+tb <- actividades_p %>%
+        group_by(provincia) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal)) %>%
+        arrange(provincia)
+kable(tb)
+```
+
+## Otras actividades no presenciales
+
+```{r}
+tb <- actividades_np %>%
+        group_by(provincia) %>%
+        summarise(nAct = n(), nCentros = n_distinct(centro, codpostal)) %>%
+        arrange(provincia)
+kable(tb)
+```
+
