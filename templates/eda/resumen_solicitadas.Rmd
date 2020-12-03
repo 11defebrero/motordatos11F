@@ -113,6 +113,8 @@ for (i in 1:length(lista_ciclos)){
 
 solic <- data0 ; data <- NULL ; data0 <- NULL
 
+ncharlas <- dim(solic)[1]
+
 for (i in 1:length(lista_herramientas)){
   data <- solic %>% 
           filter(herramientas_online %like% lista_herramientas[i]) %>%
@@ -126,8 +128,6 @@ solic$tipo1 <- solic$tipos %like% lista_tipos[1]
 solic$tipo2 <- solic$tipos %like% lista_tipos[2]
 solic$tipo3 <- solic$tipos %like% lista_tipos[3]
 solic$tipos <- NULL
-
-ncharlas <- dim(solic)[1]
 
 tb <- solic %>%
         summarise(ncentros, nsolic, ncharlas)
