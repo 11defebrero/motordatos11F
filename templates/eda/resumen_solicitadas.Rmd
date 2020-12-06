@@ -115,15 +115,6 @@ solic <- data0 ; data <- NULL ; data0 <- NULL
 
 ncharlas <- dim(solic)[1]
 
-for (i in 1:length(lista_herramientas)){
-  data <- solic %>% 
-          filter(herramientas_online %like% lista_herramientas[i]) %>%
-          mutate(herramienta = lista_herramientas[i])
-  data0 <- rbind(data, data0)
-}
-
-solic <- data0 ; rm(data) ; rm(data0)
-
 solic$tipo1 <- solic$tipos %like% lista_tipos[1]
 solic$tipo2 <- solic$tipos %like% lista_tipos[2]
 solic$tipo3 <- solic$tipos %like% lista_tipos[3]
@@ -178,19 +169,35 @@ kable(tb)
 
 ### Herramientas online
 
+Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de una herramienta.
+
 ```{r distribucion por herramientas online}
 
-tb <- solic %>%
+total_charlas <- dim(solic)[1]
+
+for (i in 1:length(lista_herramientas)){
+  data <- solic %>%
+          filter(herramientas_online %like% lista_herramientas[i]) %>%
+          mutate(herramienta = lista_herramientas[i])
+  data0 <- rbind(data, data0)
+}
+
+solic2 <- data0 ; rm(data) ; rm(data0)
+
+tb <- solic2 %>%
         group_by(herramienta) %>%
-        summarise(ncharlas = n()) %>%
+        summarise(ncharlas = n()/total_charlas*100) %>%
+        mutate(ncharlas = round(ncharlas, 1)) %>%
         arrange(desc(ncharlas))
 
-totals <- tb %>% 
-  summarize(herramienta = "Total", 
-            ncharlas = sum(ncharlas) 
-            )
+# totals <- tb %>% 
+#   summarize(herramienta = "Total", 
+#             ncharlas = sum(ncharlas) 
+#             )
+# 
+# tb <- rbind(tb, totals) 
 
-tb <- rbind(tb, totals) 
+colnames(tb)<- c("herramienta", "% de charlas") 
 
 kable(tb)
 ```
@@ -234,13 +241,19 @@ kable(tb)
 ```
 
 ### Tipo de charla
+
+Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de un tipo de charla.
+
 ```{r tipo de charla}
 
-c1 <- c("Contenido científico", "Experiencias personales", "Científicas ilustres") 
-c2 <- c(sum(solic$tipo1), sum(solic$tipo2), sum(solic$tipo3) )
+c1 <- c("Experiencias personales", "Contenido científico", "Científicas ilustres") 
+c2 <- c(round(sum(solic$tipo2)/total_charlas*100, 1), 
+        round(sum(solic$tipo1)/total_charlas*100, 1), 
+        round(sum(solic$tipo3)/total_charlas*100, 1)
+        )
 tb <- cbind(c1, c2)
-colnames(tb)<- c("tipo", "ncharlas") 
-tb <- rbind(tb, data.frame( tipo = "Total", ncharlas = sum( as.integer( tb[ , 2] ) ) ) )
+colnames(tb)<- c("tipo", "% de charlas") 
+# tb <- rbind(tb, data.frame( tipo = "Total", ncharlas = sum( as.integer( tb[ , 2] ) ) ) )
 
 kable(tb)
 
