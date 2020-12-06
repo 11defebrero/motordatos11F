@@ -41,11 +41,6 @@ li {
 
 Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
 
-Para ver los centros que han solicitado charla/taller y contactar con ellos pincha [aquí](solicitudes_mapa_tabla.html). Una vez concertada la charla, por favor, envíanos la información a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
-
-Si vas a dar una charla en un centro que no lo había solicitado previamente, también puedes anunciarlo mediante el mismo [link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
-
-
 
 -------------
 
