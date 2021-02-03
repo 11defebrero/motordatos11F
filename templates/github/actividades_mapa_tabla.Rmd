@@ -56,7 +56,7 @@ library(DT)
 actividades <- get_actividades_limpio(file_id=params$id_sheet) %>%
   filter(startsWith(procesado, "http")) %>% 
   mutate(
-    fecha = ifelse(is.na(fecha), NA, paste(fecha, " febrero 2020"))
+    fecha = ifelse(is.na(fecha), NA, paste(fecha, " febrero 2021"))
   ) %>% 
   arrange(com_autonoma, provincia, localidad, centro)
 
@@ -82,7 +82,7 @@ Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11
 
 ### [Buscar en tabla](#tabla-de-actividades-presenciales)
 
-### [Ver todas](https://11defebrero.org/category/actividades2020/){target="_blank"}
+### [Ver todas](https://11defebrero.org/category/actividades2021/){target="_blank"}
 
 -------------
 
@@ -200,7 +200,7 @@ Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11
 
 -------------
 
-### [Ver todas](https://11defebrero.org/category/actividades2020/){target="_blank"}
+### [Ver todas](https://11defebrero.org/category/actividades2021/){target="_blank"}
 
 -------------
 
