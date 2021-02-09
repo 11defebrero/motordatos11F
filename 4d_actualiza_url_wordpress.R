@@ -33,9 +33,11 @@ for (i in ind_actividades_revisar) {
   post_info <- suppressWarnings(RWordPress::getPost(actividades_wordpress$procesado[i]))
 
   if (post_info$post_status == "publish") {
+    print(post_info$title)
     actividades_wordpress$procesado[i] <- post_info$permaLink
   } else if (post_info$post_status != "draft") {
-    stop(paste("Algo ha ido mal: el status del post es", post_info$post_status))
+    print(post_info$title)
+    print(paste("Algo ha ido mal: el status del post es", post_info$post_status))
   }
 
 }
