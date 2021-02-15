@@ -2,6 +2,9 @@ library(formularios11F)
 library(dplyr)
 library(rmarkdown)
 
+# Nota: está hecho para los headers del archivo de 2020. Si da algún problema coger los headers del archivo original de googlesheets de 2020.
+# ANUNCIAR CHARLAS CONCERTADAS (Original)
+# https://docs.google.com/spreadsheets/d/1JVaEcf_CDPOhMobx1PzOzAkRvyvdI_NYKyXmH7TIu6A/edit#gid=816873668
 
 # Configuración
 
