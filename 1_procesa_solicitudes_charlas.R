@@ -9,7 +9,6 @@ config <- leer_config("config/config.json")
 ID_SHEET_SOLICITUDES_ORIGINAL <- config$ids_googledrive$solicitudes$original
 ID_SHEET_SOLICITUDES_LIMPIO <- config$ids_googledrive$solicitudes$limpio
 
-
 # Cargar datos
 
 solicitudes_original <- get_solicitudes_charlas_original(file_id=ID_SHEET_SOLICITUDES_ORIGINAL)
