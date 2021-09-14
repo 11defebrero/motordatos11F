@@ -164,15 +164,16 @@ solicitudes_tabla <- solicitudes %>%
     Referencia = id,
     Provincia = provincia,
     Localidad = paste(codpostal, localidad, sep=", "),
-    # Videoll. = videollamada,
-    `Inglés` = ingles,
+    Formato = pres_online,
+    Idioma = idioma,
     Niveles = niveles,
-    Tipos = gsub("La historia de científicas ilustres", "Científicas ilustres", fixed=TRUE,
-                 gsub("Experiencias de científicas", "Experiencias personales", fixed=TRUE,
-                      gsub("Charla de contenido científico (física, química, tecnología, ciencias de la vida...)", 
-                           "Contenido científico", fixed=TRUE,
+    Tipos = gsub("Mujeres referentes y/o pioneras en áreas STEM.", "Referentes", fixed=TRUE,
+                 gsub("Experiencias personales de mujeres STEM.", "Experiencias", fixed=TRUE,
+                      gsub("Talleres u otra actividad en la que participe el alumnado.", 
+                           "Talleres", fixed=TRUE,
                            tipos)))
   )
+
 
 ```
 

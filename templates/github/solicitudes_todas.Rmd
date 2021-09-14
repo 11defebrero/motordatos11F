@@ -58,17 +58,17 @@ Hay `r nrow(solicitudes)` solicitudes en total.
 
 Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
 
-```{r results='asis'}
-cat(
-  "Una vez seleccionado el centro, rellena",
-  html_link(
-     texto="este formulario",
-     url=paste0("https://docs.google.com/forms/d/e/", params$id_form_contacto, "/viewform"),
-     new_tab=TRUE
-   ), 
-   "para que os pongamos en contacto y podáis concertar la charla."
-)
-```
+<!-- ```{r results='asis'} -->
+<!-- cat( -->
+<!--   "Una vez seleccionado el centro, rellena", -->
+<!--   html_link( -->
+<!--      texto="este formulario", -->
+<!--      url=paste0("https://docs.google.com/forms/d/e/", params$id_form_contacto, "/viewform"), -->
+<!--      new_tab=TRUE -->
+<!--    ),  -->
+<!--    "para que os pongamos en contacto y podáis concertar la charla." -->
+<!-- ) -->
+<!-- ``` --> TODO
 
 <!-- Una vez concertada la charla, por favor, envíanos la información en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad). -->
 
