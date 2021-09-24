@@ -17,20 +17,23 @@ solicitudes_limpio <- get_solicitudes_charlas_limpio(file_id=ID_SHEET_SOLICITUDE
 
 # Filtrar nuevas solicitudes
 
-solicitudes_new <- solicitudes_original %>%
-  filter(! id %in% solicitudes_limpio$id)
-
+if(dim(solicitudes_limpio)[1]!=0){
+  solicitudes_new <- solicitudes_original %>%
+    filter(! id %in% solicitudes_limpio$id)
+} else solicitudes_new <- solicitudes_original
 
 # Añadir solicitudes corregidas que no tienen coordenadas para que se procesen también
 
-solicitudes_corregidas <- solicitudes_limpio %>%
-  filter(procesado == "CORREGIDO") %>%
-  filter(is.na(lon) | is.na(lat)) %>%
-  select(-lon, -lat) %>%
-  mutate(
-    fallos = "",
-    fallos_geolocalizacion = ""
-  )
+if(dim(solicitudes_limpio)[1]!=0){
+  solicitudes_corregidas <- solicitudes_limpio %>%
+    filter(procesado == "CORREGIDO") %>%
+    filter(is.na(lon) | is.na(lat)) %>%
+    select(-lon, -lat) %>%
+    mutate(
+      fallos = "",
+      fallos_geolocalizacion = ""
+    )
+} 
 
 solicitudes_new <- solicitudes_new %>%
   rbind(solicitudes_corregidas) %>%
@@ -50,6 +53,7 @@ if (nrow(solicitudes_new) == 0) {
 solicitudes_new <- limpia_solicitudes_charlas(solicitudes_new) %>%
   mutate(procesado = ifelse(fallos == "", "OK", "FALLO"))
 
+# FIXME tarda mucho en procesar el campo web
 
 # Geolocalizar centros (coordenadas código postal)
 
