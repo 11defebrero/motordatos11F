@@ -27,7 +27,7 @@ if(dim(solicitudes_limpio)[1]!=0){
 if(dim(solicitudes_limpio)[1]!=0){
   solicitudes_corregidas <- solicitudes_limpio %>%
     filter(procesado == "CORREGIDO") %>%
-    filter(is.na(lon) | is.na(lat)) %>%
+    filter(is.na(lon) | is.na(lat)) %>%  
     select(-lon, -lat) %>%
     mutate(
       fallos = "",
