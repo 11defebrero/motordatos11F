@@ -11,7 +11,7 @@ ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$limpio
 # ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
 # ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
 # ID_SHEET_ACTIVIDADES_WORDPRESS <- config$ids_googledrive$actividades$wordpress
-# ID_FORMULARIO_CONTACTO <- config$ids_googledrive$contactos$formulario
+ID_FORMULARIO_CONTACTO <- config$ids_googledrive$contactos$formulario
 
 DIR_WEB <- file.path(dirname(rprojroot::find_rstudio_root_file()), "web11F")
 DIR_WEB_LIBS <- file.path(DIR_WEB, "libs/")
@@ -23,8 +23,8 @@ rmarkdown::render(
   encoding = "UTF-8",
   input = "templates/github/solicitudes_todas.Rmd",
   params = list(
-    id_sheet = ID_SHEET_SOLICITUDES_RESTANTES #,
-    #    id_form_contacto = ID_FORMULARIO_CONTACTO # TODO
+    id_sheet = ID_SHEET_SOLICITUDES_RESTANTES,
+    id_form_contacto = ID_FORMULARIO_CONTACTO 
   ),
   output_file = "solicitudes_todas.html",
   output_dir = DIR_WEB,
@@ -38,8 +38,8 @@ rmarkdown::render(
   encoding = "UTF-8",
   input = "templates/github/solicitudes_mapa_tabla.Rmd",
   params = list(
-    id_sheet = ID_SHEET_SOLICITUDES_RESTANTES#,
-    # id_form_contacto = ID_FORMULARIO_CONTACTO # TODO
+    id_sheet = ID_SHEET_SOLICITUDES_RESTANTES,
+    id_form_contacto = ID_FORMULARIO_CONTACTO 
   ),
   output_file = "solicitudes_mapa_tabla.html",
   output_dir = DIR_WEB,

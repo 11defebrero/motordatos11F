@@ -4,6 +4,7 @@
 
 # Opcional
 
+detach("package:formularios11F", unload = TRUE)
 devtools::install_github("11defebrero/formularios11F")
 library("formularios11F")
 
@@ -41,5 +42,8 @@ source("99_genera_html_web.R", encoding = "UTF-8")
 
 
 # Actualización resúmenes EDA
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/install-latex.html
+# tinytex::install_tinytex()
 
 source("99_genera_pdf_eda.R", encoding = "UTF-8")

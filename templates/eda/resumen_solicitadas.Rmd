@@ -11,7 +11,7 @@ output:
 ---
 
 ```{r packages, include = FALSE}
-knitr::opts_chunk$set(echo=FALSE)
+knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
   
 library(formularios11F)
@@ -30,7 +30,7 @@ library(ggplot2)
 ```{r carga datos, include=FALSE}
 
 solic <- get_solicitudes_charlas_limpio(file_id=params$id_sheet) %>% 
-  filter(procesado %in% c("OK", "CORREGIDO"))
+  filter(procesado %in% c("OK", "CORREGIDO")) 
 
 ```
 
@@ -72,42 +72,25 @@ ggplot(nsolicitudes, aes(x=dia, y=total, label=total)) +
 ncentros <- dim(unique(solic[ , c("centro", "codpostal")]))[1]
 nsolic <- dim(solic)[1]
 
-lista_niveles <- c("Infantil 3 años", "Infantil 4 años", "Infantil 5 años", 
-                    "1º Primaria", "2º Primaria", "3º Primaria", 
-                    "4º Primaria", "5º Primaria", "6º Primaria", 
-                    "1º ESO", "2º ESO", "3º ESO", "4º ESO",
-                    "1º Bachillerato", "2º Bachillerato",
-                    "Formación profesional", "Adultos", "Otros"
-                   )
-
-lista_ciclos <- c("Infantil", "Primaria", "ESO", "Bachillerato", 
-                  "Formación profesional", "Adultos", "Otros"
-                  )
-
-lista_tipos <- c("Charla de contenido científico", 
-                 "Experiencias de científicas", 
-                 "La historia de científicas ilustres"
-                  )
-
-lista_herramientas <- c("Skype", "Zoom", "Webex", "Microsoft Teams",
-                        "Google Meet", "Jitsi", "Moodle BB Collaborate", "Otras"
-                        )
+# Las listas de opciones se cargan con el paquete "formularios11f" opciones_elección.R
 
 data <- NULL ; data0 <- NULL
 
-for (i in 1:length(lista_niveles)){
+# nivel 
+for (i in 1:length(OPCIONES_NIVEL)){
   data <- solic %>% 
-          filter(niveles %like% lista_niveles[i]) %>%
-          mutate(nivel = lista_niveles[i])
+          filter(niveles %like% OPCIONES_NIVEL[i]) %>%
+          mutate(nivel = OPCIONES_NIVEL[i])
   data0 <- rbind(data, data0)
 }
 
 data0$niveles <- NULL ; solic <- data0 ; data <- NULL ; data0 <- NULL
 
-for (i in 1:length(lista_ciclos)){
+# ciclo
+for (i in 1:length(OPCIONES_CICLOS)){
   data <- solic %>% 
-          filter(nivel %like% lista_ciclos[i]) %>%
-          mutate(ciclo = lista_ciclos[i])
+          filter(nivel %like% OPCIONES_CICLOS[i]) %>%
+          mutate(ciclo = OPCIONES_CICLOS[i])
   data0 <- rbind(data, data0)
 }
 
@@ -115,10 +98,14 @@ solic <- data0 ; data <- NULL ; data0 <- NULL
 
 ncharlas <- dim(solic)[1]
 
-solic$tipo1 <- solic$tipos %like% lista_tipos[1]
-solic$tipo2 <- solic$tipos %like% lista_tipos[2]
-solic$tipo3 <- solic$tipos %like% lista_tipos[3]
+# tipo
+solic$tipo1 <- solic$tipos %like% OPCIONES_TIPO_CHARLA[1]
+solic$tipo2 <- solic$tipos %like% OPCIONES_TIPO_CHARLA[2]
+solic$tipo3 <- solic$tipos %like% OPCIONES_TIPO_CHARLA[3]
+solic$tipo4 <- solic$tipos %like% OPCIONES_TIPO_CHARLA[4]
 solic$tipos <- NULL
+
+########################
 
 tb <- solic %>%
         summarise(ncentros, nsolic, ncharlas)
@@ -132,7 +119,7 @@ kable(tb)
 tb <- solic %>%
         group_by(ciclo) %>%
         summarise(ncharlas = n()) # %>%
-        # arrange(order(lista_ciclos))
+        # arrange(order(OPCIONES_CICLOS))
 
 totals <- tb %>% 
   summarize(ciclo = "Total", 
@@ -153,7 +140,7 @@ kable(tb)
 tb <- solic %>%
         group_by(nivel) %>%
         summarise(ncharlas = n()) # %>%
-        # arrange(order(lista_niveles))
+        # arrange(order(OPCIONES_CICLOS))
 
 totals <- tb %>% 
   summarize(nivel = "Total", 
@@ -164,8 +151,37 @@ tb <- rbind(tb, totals)
 
 
 kable(tb)
-
 ```
+### Formato presencial/online
+
+Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de una opción.
+
+```{r formato}
+
+# pres_online
+
+total_solicitudes <- dim(solic)[1]
+
+for (i in 1:length(OPCIONES_PRES_ONLINE)){
+  data <- solic %>% 
+          filter(pres_online %like% OPCIONES_PRES_ONLINE[i]) %>%
+          mutate(pres_online = OPCIONES_PRES_ONLINE[i])
+  data0 <- rbind(data, data0)
+}
+
+solic2 <- data0 ; data <- NULL ; data0 <- NULL
+
+tb <- solic2 %>%
+        group_by(pres_online) %>%
+        summarise(ncharlas = n()/total_solicitudes*100) %>%
+        mutate(ncharlas = round(ncharlas, 1)) %>%
+        arrange(desc(ncharlas))
+
+colnames(tb)<- c("formato", "% de charlas") 
+
+kable(tb)
+```
+
 
 ### Herramientas online
 
@@ -173,29 +189,21 @@ Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más d
 
 ```{r distribucion por herramientas online}
 
-total_charlas <- dim(solic)[1]
-
-for (i in 1:length(lista_herramientas)){
+for (i in 1:length(OPCIONES_HERRAMIENTAS)){
   data <- solic %>%
-          filter(herramientas_online %like% lista_herramientas[i]) %>%
-          mutate(herramienta = lista_herramientas[i])
+          filter(herramientas_online %like% OPCIONES_HERRAMIENTAS[i]) %>%
+          mutate(herramienta = OPCIONES_HERRAMIENTAS[i])
   data0 <- rbind(data, data0)
 }
 
-solic2 <- data0 ; rm(data) ; rm(data0)
+solic2 <- data0 ; data <- NULL ; data0 <- NULL
+
 
 tb <- solic2 %>%
         group_by(herramienta) %>%
-        summarise(ncharlas = n()/total_charlas*100) %>%
+        summarise(ncharlas = n()/total_solicitudes*100) %>%
         mutate(ncharlas = round(ncharlas, 1)) %>%
         arrange(desc(ncharlas))
-
-# totals <- tb %>% 
-#   summarize(herramienta = "Total", 
-#             ncharlas = sum(ncharlas) 
-#             )
-# 
-# tb <- rbind(tb, totals) 
 
 colnames(tb)<- c("herramienta", "% de charlas") 
 
@@ -203,38 +211,31 @@ kable(tb)
 ```
 
 
-<!-- ### Solicitudes que aceptan videollamada -->
 
-<!-- ```{r videollamadas} -->
-<!-- tb <- solic %>%  -->
-<!--         group_by(videollamada) %>% -->
-<!--         summarise(nsolic = n_distinct(id), -->
-<!--                   ncharlas = n()) -->
+### Idiomas
 
-<!-- tb[ dim(tb)[1]+1, ] <- c("Total", colSums(tb[ , 2:3])) -->
+Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de una opción.
 
-<!-- kable(tb) -->
+```{r pres_onlines e idioma}
 
-<!-- ``` -->
+# idioma
 
+for (i in 1:length(OPCIONES_IDIOMA)){
+  data <- solic %>% 
+          filter(idioma %like% OPCIONES_IDIOMA[i]) %>%
+          mutate(idioma = OPCIONES_IDIOMA[i])
+  data0 <- rbind(data, data0)
+}
 
-### Inglés
+solic_idiomas <- data0 ; data <- NULL ; data0 <- NULL
 
-```{r videollamadas e ingles}
-tb <- solic %>% 
-        # group_by(videollamada, ingles) %>%
-        group_by(ingles) %>%
-        summarise(nsolic = n_distinct(id),
-                  ncharlas = n())
+tb <- solic_idiomas %>%
+        group_by(idioma) %>%
+        summarise(ncharlas = n()/total_solicitudes*100) %>%
+        mutate(ncharlas = round(ncharlas, 1)) %>%
+        arrange(desc(ncharlas))
 
-totals <- tb %>% 
-  summarize(ingles = "Total", 
-            nsolic = sum(nsolic), 
-            ncharlas = sum(ncharlas) 
-            )
-
-tb <- rbind(tb, totals) %>%
-              arrange(ingles)
+colnames(tb)<- c("idioma", "% de charlas") 
 
 kable(tb)
 
@@ -246,11 +247,13 @@ Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más d
 
 ```{r tipo de charla}
 
-c1 <- c("Experiencias personales", "Contenido científico", "Científicas ilustres") 
-c2 <- c(round(sum(solic$tipo2)/total_charlas*100, 1), 
-        round(sum(solic$tipo1)/total_charlas*100, 1), 
-        round(sum(solic$tipo3)/total_charlas*100, 1)
+c1 <- c("Mujeres", "Experiencias", "Talleres", "Otros") 
+c2 <- c(round(sum(solic$tipo1)/total_solicitudes*100, 1), 
+        round(sum(solic$tipo2)/total_solicitudes*100, 1), 
+        round(sum(solic$tipo3)/total_solicitudes*100, 1),
+        round(sum(solic$tipo4)/total_solicitudes*100, 1)
         )
+
 tb <- cbind(c1, c2)
 colnames(tb)<- c("tipo", "% de charlas") 
 # tb <- rbind(tb, data.frame( tipo = "Total", ncharlas = sum( as.integer( tb[ , 2] ) ) ) )
@@ -320,11 +323,11 @@ kable(tb)
 ```
 
 
-<!-- ### Comunidad autónoma y videollamada -->
-<!-- ```{r comunidades y videollamada} -->
+<!-- ### Comunidad autónoma y pres_online -->
+<!-- ```{r comunidades y pres_online} -->
 
 <!-- tb <- solic %>% -->
-<!--         group_by(com_autonoma, videollamada) %>% -->
+<!--         group_by(com_autonoma, pres_online) %>% -->
 <!--         summarise(nsolic = n_distinct(id), -->
 <!--                   ncharlas = n()) %>% -->
 <!--         arrange(com_autonoma) -->
@@ -337,27 +340,28 @@ kable(tb)
 <!-- ``` -->
 
 
-### Comunidad autónoma / inglés
+### Comunidad autónoma / idioma
 
-```{r comunidades videollamada e ingles}
+```{r comunidades pres_online e idioma}
 
 tb <- solic %>%
-        # group_by(com_autonoma, videollamada, ingles) %>%
-        group_by(com_autonoma, ingles) %>%
-        summarise(nsolic = n_distinct(id),
-                  ncharlas = n()) %>%
+        # group_by(com_autonoma, pres_online, idioma) %>%
+        group_by(com_autonoma, idioma) %>%
+        summarise(nsolic = n_distinct(id)) %>%
         arrange(com_autonoma)
+
+
 
 totals <- tb %>% 
   group_by(com_autonoma) %>% 
-  summarize(ingles = "Subtotal", 
+  summarize(idioma = "Subtotal", 
             nsolic = sum(nsolic),
             ncharlas = sum(ncharlas) 
             )
 
 grandTotals <- totals %>% 
   summarize(com_autonoma ="",
-            ingles = "Total", 
+            idioma = "Total", 
             nsolic = sum(nsolic),
             ncharlas = sum(ncharlas) 
             )
@@ -368,6 +372,8 @@ totals <- rbind(tb, totals) %>%
 tb <- rbind(totals, grandTotals) 
 
 kable(tb)
+
+# FIXME pasa lo mismo que arriba, que coge grupos de varios idiomas
 
 ```
 
@@ -430,12 +436,12 @@ kable(tb)
 ```
 
 
-<!-- ### Provincia y videollamada -->
+<!-- ### Provincia y pres_online -->
 
-<!-- ```{r provincia y videollamada} -->
+<!-- ```{r provincia y pres_online} -->
 
 <!-- tb <- solic %>% -->
-<!--         group_by(provincia, videollamada) %>% -->
+<!--         group_by(provincia, pres_online) %>% -->
 <!--         summarise(nsolic = n_distinct(id), -->
 <!--                   ncharlas = n()) %>% -->
 <!--         arrange(provincia) -->
@@ -447,28 +453,34 @@ kable(tb)
 <!-- ``` -->
 
 
-### Provincia/inglés
+### Provincia/idioma
 
 
-```{r provincia videollamada e ingles}
+```{r provincia e idioma}
 
-tb <- solic %>%
-        # group_by(provincia, videollamada, ingles) %>%
-        group_by(provincia, ingles) %>%
-        summarise(nsolic = n_distinct(id),
-                  ncharlas = n()) %>%
+tb <- solic_idiomas %>%
+        # group_by(provincia, pres_online, idioma) %>%
+        group_by(provincia, idioma) %>%
+        summarise(nsolic = n_distinct(id)) %>%
         arrange(provincia)
+
+tb2 <- cast(tb, provincia~idioma)
+tb3 <- tb2
+tb3[ is.na(tb2[ , ]) ] <- 0
+
+tb3 %>% summarise()
+
+total_vertical
 
 totals <- tb %>% 
   group_by(provincia) %>% 
-  summarize(ingles = "Subtotal", 
-            nsolic = sum(nsolic),
-            ncharlas = sum(ncharlas) 
+  summarize(idioma = "Subtotal", 
+            nsolic = sum(nsolic) 
             )
 
 grandTotals <- totals %>% 
   summarize(provincia = "", 
-            ingles = "Total",
+            idioma = "Total",
             nsolic = sum(nsolic),
             ncharlas = sum(ncharlas) 
             )
@@ -479,6 +491,8 @@ tb <- rbind(tb, totals) %>%
 tb <- rbind(tb, grandTotals) 
 
 kable(tb)
+
+# FIXME de nuevo lo de los idiomas
 
 ```
 
