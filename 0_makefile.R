@@ -40,7 +40,6 @@ source("1_procesa_solicitudes_charlas.R", encoding = "UTF-8")
 
 source("99_genera_html_web.R", encoding = "UTF-8")
 
-
 # Actualización resúmenes EDA
 
 # https://bookdown.org/yihui/rmarkdown-cookbook/install-latex.html

@@ -13,9 +13,9 @@ output:
 ```{r packages, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
-  
 library(formularios11F)
 library(dplyr, warn.conflicts = FALSE)
+library(reshape, warn.conflicts = FALSE)
 
 # Suppress summarise info
 options(dplyr.summarise.inform = FALSE)
@@ -105,11 +105,29 @@ solic$tipo3 <- solic$tipos %like% OPCIONES_TIPO_CHARLA[3]
 solic$tipo4 <- solic$tipos %like% OPCIONES_TIPO_CHARLA[4]
 solic$tipos <- NULL
 
-########################
-
 tb <- solic %>%
         summarise(ncentros, nsolic, ncharlas)
 kable(tb)
+```
+
+### Tipo de charla
+
+Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de un tipo de charla.
+
+```{r tipo de charla}
+
+c1 <- c("Mujeres", "Experiencias", "Talleres") 
+c2 <- c(round(sum(solic$tipo1)/total_solicitudes*100, 1), 
+        round(sum(solic$tipo2)/total_solicitudes*100, 1), 
+        round(sum(solic$tipo3)/total_solicitudes*100, 1)
+        )
+
+tb <- cbind(c1, c2)
+colnames(tb)<- c("tipo", "% de charlas") 
+# tb <- rbind(tb, data.frame( tipo = "Total", ncharlas = sum( as.integer( tb[ , 2] ) ) ) )
+
+kable(tb)
+
 ```
 
 ### Ciclo
@@ -118,16 +136,22 @@ kable(tb)
 
 tb <- solic %>%
         group_by(ciclo) %>%
-        summarise(ncharlas = n()) # %>%
+        summarise(ncentros = n_distinct(centro, codpostal),
+                  ncharlas = n()) %>%
+                  mutate(peso_centros = round(ncentros / sum(ncentros) * 100, 1),
+                         peso_charlas = round(ncharlas / sum(ncharlas) * 100, 1))
         # arrange(order(OPCIONES_CICLOS))
 
 totals <- tb %>% 
   summarize(ciclo = "Total", 
-            ncharlas = sum(ncharlas) 
-            )
+            ncentros = sum(ncentros),
+            ncharlas = sum(ncharlas),
+            peso_centros = sum(peso_centros),
+            peso_charlas = sum(peso_charlas))
 
-tb <- rbind(tb, totals) %>%
-              arrange(ciclo)
+# tb <- rbind(tb, totals) %>% arrange(ciclo)
+
+tb <- rbind(tb, totals)
 
 kable(tb)
 
@@ -210,8 +234,6 @@ colnames(tb)<- c("herramienta", "% de charlas")
 kable(tb)
 ```
 
-
-
 ### Idiomas
 
 Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de una opción.
@@ -241,26 +263,6 @@ kable(tb)
 
 ```
 
-### Tipo de charla
-
-Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de un tipo de charla.
-
-```{r tipo de charla}
-
-c1 <- c("Mujeres", "Experiencias", "Talleres", "Otros") 
-c2 <- c(round(sum(solic$tipo1)/total_solicitudes*100, 1), 
-        round(sum(solic$tipo2)/total_solicitudes*100, 1), 
-        round(sum(solic$tipo3)/total_solicitudes*100, 1),
-        round(sum(solic$tipo4)/total_solicitudes*100, 1)
-        )
-
-tb <- cbind(c1, c2)
-colnames(tb)<- c("tipo", "% de charlas") 
-# tb <- rbind(tb, data.frame( tipo = "Total", ncharlas = sum( as.integer( tb[ , 2] ) ) ) )
-
-kable(tb)
-
-```
 
 
 ## Desglose por comunidades autónomas
@@ -456,43 +458,43 @@ kable(tb)
 ### Provincia/idioma
 
 
-```{r provincia e idioma}
+<!-- ```{r provincia e idioma} -->
 
-tb <- solic_idiomas %>%
-        # group_by(provincia, pres_online, idioma) %>%
-        group_by(provincia, idioma) %>%
-        summarise(nsolic = n_distinct(id)) %>%
-        arrange(provincia)
+<!-- tb <- solic_idiomas %>% -->
+<!--         # group_by(provincia, pres_online, idioma) %>% -->
+<!--         group_by(provincia, idioma) %>% -->
+<!--         summarise(nsolic = n_distinct(id)) %>% -->
+<!--         arrange(provincia) -->
 
-tb2 <- cast(tb, provincia~idioma)
-tb3 <- tb2
-tb3[ is.na(tb2[ , ]) ] <- 0
+<!-- tb2 <- cast(tb, provincia~idioma) -->
+<!-- tb3 <- tb2 -->
+<!-- tb3[ is.na(tb2[ , ]) ] <- 0 -->
 
-tb3 %>% summarise()
+<!-- tb3 %>% summarise() -->
 
-total_vertical
+<!-- total_vertical -->
 
-totals <- tb %>% 
-  group_by(provincia) %>% 
-  summarize(idioma = "Subtotal", 
-            nsolic = sum(nsolic) 
-            )
+<!-- totals <- tb %>%  -->
+<!--   group_by(provincia) %>%  -->
+<!--   summarize(idioma = "Subtotal",  -->
+<!--             nsolic = sum(nsolic)  -->
+<!--             ) -->
 
-grandTotals <- totals %>% 
-  summarize(provincia = "", 
-            idioma = "Total",
-            nsolic = sum(nsolic),
-            ncharlas = sum(ncharlas) 
-            )
+<!-- grandTotals <- totals %>%  -->
+<!--   summarize(provincia = "",  -->
+<!--             idioma = "Total", -->
+<!--             nsolic = sum(nsolic), -->
+<!--             ncharlas = sum(ncharlas)  -->
+<!--             ) -->
 
-tb <- rbind(tb, totals) %>%
-              arrange(provincia)
+<!-- tb <- rbind(tb, totals) %>% -->
+<!--               arrange(provincia) -->
 
-tb <- rbind(tb, grandTotals) 
+<!-- tb <- rbind(tb, grandTotals)  -->
 
-kable(tb)
+<!-- kable(tb) -->
 
-# FIXME de nuevo lo de los idiomas
+<!-- # FIXME de nuevo lo de los idiomas -->
 
-```
+<!-- ``` -->
 
