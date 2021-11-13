@@ -23,7 +23,7 @@ concertadas <- get_charlas_concertadas_limpio(file_id=ID_SHEET_CONCERTADAS_LIMPI
 
 solicitudes_restantes <- solicitudes_restantes %>%
   elimina_solicitudes_charlas_concertadas(concertadas)
-
+#FIXME añadir educación especial a los niveles
 
 # Subir a Google Drive
 
