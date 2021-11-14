@@ -26,7 +26,8 @@ source("2b_envia_emails_contacto.R", encoding = "UTF-8")
 
 source("3a_procesa_charlas_concertadas.R", encoding = "UTF-8")
 #FIXME los nombres de los campos del formulario no coinciden con los de las 
-# funciones de procesado de los campos
+# funciones de procesado de los campos. Se resuelve modificándolos en la hoja 
+# de Google pero dará guerra el año que viene también
 
 source("3b_actualiza_solicitudes_charlas_restantes.R", encoding = "UTF-8")
 #FIXME Falla
