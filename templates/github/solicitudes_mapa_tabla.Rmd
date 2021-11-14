@@ -164,7 +164,7 @@ solicitudes_tabla <- solicitudes %>%
     Referencia = id,
     Provincia = provincia,
     Localidad = paste(codpostal, localidad, sep=", "),
-    Formato = pres_online,
+    Formato = formato,
     Idioma = idioma,
     Niveles = niveles,
     Tipos = gsub("Mujeres referentes y/o pioneras en áreas STEM.", "Referentes", fixed=TRUE,
