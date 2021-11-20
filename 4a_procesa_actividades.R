@@ -17,6 +17,9 @@ actividades_original <- suppressWarnings(
   get_actividades_original(file_id=ID_SHEET_ACTIVIDADES_ORIGINAL)
 ) # FIXME: simplificar formulario para evitar columnas duplicadas
 
+# actividades_limpio <- NULL 
+# FIXME para ejecutar la primera vez 
+
 actividades_limpio <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_LIMPIO)
 
 actividades_new <- actividades_original %>%

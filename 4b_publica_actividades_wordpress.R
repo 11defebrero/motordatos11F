@@ -28,6 +28,9 @@ actividades_limpio <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_LIMPIO
   filter(clase_actividad %in% c("PRESENCIAL", "NO PRESENCIAL")) %>%
   filter(procesado %in% c("OK", "CORREGIDO"))
 
+#FIXME la primera vez tengo que ejecutar lo siguiente en vez de lo de después
+# actividades_wordpress <- NULL
+
 actividades_wordpress <- get_actividades_limpio(file_id=ID_SHEET_ACTIVIDADES_WORDPRESS)
 
 actividades_publicar <- actividades_limpio %>%
@@ -60,6 +63,10 @@ for (i in 1:nrow(actividades_publicar)) {
   print(paste("Vamos por el post", i, " de ", nrow(actividades_publicar)))
 
 }
+
+#FIXME aquí falla
+# Error in function (type, msg, asError = TRUE)  : 
+#   error:1407742E:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert protocol version
 
 # Dejar fuera las marcadas con "NO PUBLICAR" en actividades limpio
 

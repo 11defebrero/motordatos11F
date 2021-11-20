@@ -17,7 +17,8 @@ MAX_ENVIOS_DIARIOS <- 400
 # Autenticación cuenta Gmail
 
 gmail_acceso("config/gmail_credentials.json")
-
+#TODO
+#do something so you don't need to write 1 everytime
 
 # Filtrar peticiones de contacto con centros pendientes de gestionar
 
@@ -47,12 +48,16 @@ total_enviados <- sum(startsWith(contactos_enviado$procesado, format(Sys.Date(),
 
 # Enviar emails de peticiones de contacto no válidas
 
+print("Empezamos por los errores (marcados como <ERROR> en el campo <procesado>)")
+
 for (i in which(contactos_pendientes$procesado == "ERROR")) {
 
   if (total_enviados >= MAX_ENVIOS_DIARIOS) {
     break # Se sigue ejecutando el script para subir los datos actualizados
   }
 
+  print(paste("Correo", i, contactos_pendientes$email_centro[i]))
+  
   gmail_envia_email(
     to = contactos_pendientes$email[i],
     from = CUENTA_ENVIO_EMAILS,
@@ -83,12 +88,16 @@ for (i in which(contactos_pendientes$procesado == "ERROR")) {
 
 # Enviar emails de peticiones de contacto válidas
 
+print("Vamos con las peticiones válidas")
+
 for (i in which(contactos_pendientes$procesado != "ERROR")) { # es decir: OK, CORREGIDO o REVISADO
 
   if (total_enviados >= MAX_ENVIOS_DIARIOS) {
     break # Se sigue ejecutando el script para subir los datos actualizados
   }
-
+  
+  print(paste("Correo", i, contactos_pendientes$email_centro[i]))
+  
   gmail_envia_email(
     to = contactos_pendientes$email_centro[i],
     from = CUENTA_ENVIO_EMAILS,
