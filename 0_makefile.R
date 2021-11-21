@@ -9,7 +9,7 @@ devtools::install_github("11defebrero/formularios11F")
 library("formularios11F")
 
 googledrive::drive_auth()
-
+#TODO seleccionar 1 por defecto
 
 # Charlas solicitadas
 
@@ -36,7 +36,6 @@ source("3b_actualiza_solicitudes_charlas_restantes.R", encoding = "UTF-8")
 # Actividades
 
 source("4a_procesa_actividades.R", encoding = "UTF-8")
-
 
 source("4b_publica_actividades_wordpress.R", encoding = "UTF-8")
 #FIXME Falla

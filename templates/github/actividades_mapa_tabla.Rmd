@@ -2,6 +2,7 @@
 pagetitle: "Actividades - mapa y tabla"
 params:
   id_sheet: NA
+  edicion: NA
 output: 
   html_document: 
     self_contained: no
@@ -53,10 +54,10 @@ library(DT)
 
 ```{r}
 
-actividades <- get_actividades_limpio(file_id=params$id_sheet) %>%
+actividades <- get_actividades_limpio(file_id=params$id_sheet, ed <- params$edicion) %>%
   filter(startsWith(procesado, "http")) %>% 
   mutate(
-    fecha = ifelse(is.na(fecha), NA, paste(fecha, " febrero 2022"))
+    fecha = ifelse(is.na(fecha), NA, paste(fecha, " febrero ", ed)) #TODO coger el año de la edición automáticamente
   ) %>% 
   arrange(com_autonoma, provincia, localidad, centro)
 

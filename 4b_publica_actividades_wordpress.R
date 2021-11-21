@@ -46,10 +46,11 @@ if (nrow(actividades_publicar) == 0) {
 for (i in 1:nrow(actividades_publicar)) {
 
   tags <- tags_actividad(actividades_publicar[i,], config$edicion)
-
+  #FIXME 8F2022??
+  
   ## render post
 
-  post_id <- knit2wp(
+  post_id <- knitr::knit2wp(
     "templates/wordpress/actividades_wordpress_template.Rmd",
     envir = parent.frame(),
     action = "newPost",
@@ -58,6 +59,7 @@ for (i in 1:nrow(actividades_publicar)) {
     categories = paste0("Actividades", config$edicion),
     mt_keywords = tags
   )
+  #FIXME 
 
   actividades_publicar$procesado[i] <- post_id
   print(paste("Vamos por el post", i, " de ", nrow(actividades_publicar)))

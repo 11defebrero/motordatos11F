@@ -12,7 +12,7 @@ ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
 ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
 ID_SHEET_ACTIVIDADES_WORDPRESS <- config$ids_googledrive$actividades$wordpress
 ID_FORMULARIO_CONTACTO <- config$ids_googledrive$contactos$formulario
-
+EDICION <- config$edicion 
 DIR_WEB <- file.path(dirname(rprojroot::find_rstudio_root_file()), "web11F")
 DIR_WEB_LIBS <- file.path(DIR_WEB, "libs/")
 
@@ -103,13 +103,16 @@ rmarkdown::render(
 
 Sys.sleep(5)
 
-rmarkdown::render(
-  encoding = "UTF-8",
-  input = "templates/github/actividades_mapa_tabla.Rmd",
-  params = list(id_sheet = ID_SHEET_ACTIVIDADES_WORDPRESS),
-  output_file = "actividades_mapa_tabla.html",
-  output_dir = DIR_WEB,
-  output_options = list(lib_dir = DIR_WEB_LIBS),
-  quiet = TRUE
-)
+# el siguiente aun no funciona
+
+# rmarkdown::render(
+#   encoding = "UTF-8",
+#   input = "templates/github/actividades_mapa_tabla.Rmd",
+#   params = list(id_sheet = ID_SHEET_ACTIVIDADES_WORDPRESS,
+#                  edicion = EDICION),
+#   output_file = "actividades_mapa_tabla.html",
+#   output_dir = DIR_WEB,
+#   output_options = list(lib_dir = DIR_WEB_LIBS),
+#   quiet = TRUE
+# )
 
