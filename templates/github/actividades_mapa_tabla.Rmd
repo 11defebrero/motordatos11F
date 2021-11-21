@@ -37,7 +37,16 @@ li {
 
 
 
-# Actividades GENERALES {.tabset .tabset-fade .tabset-pills}
+# Actividades11F {.tabset .tabset-fade .tabset-pills}
+
+
+Aquí puedes consultar todas las actividades organizadas por librerías, comercios, bibliotecas, empresas, o cualqueir institución distinta a un centro educativo con motivo del [Día de la Mujer y la Niña en la Ciencia](https://11defebrero.org/).
+
+Las actividades que organizan los centros educativos las puedes consultar en [Centros11F](https://11defebrero.github.io/web11F/centros11f_todos.html)
+
+Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
+
+
 
 
 ```{r include=FALSE}
