@@ -16,10 +16,12 @@ config <- leer_config("config/config.json")
 ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
 ID_SHEET_ACTIVIDADES_WORDPRESS <- config$ids_googledrive$actividades$wordpress
 
+
 options(
   WordpressLogin = setNames(config$wordpress$password, config$wordpress$user),
   WordpressURL = config$wordpress$url
 )
+
 
 
 ## Cargar datos limpios

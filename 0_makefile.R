@@ -9,7 +9,7 @@ devtools::install_github("11defebrero/formularios11F")
 library("formularios11F")
 
 googledrive::drive_auth()
-#TODO seleccionar 1 por defecto
+#TODO seleccionar "1" por defecto
 
 # Charlas solicitadas
 

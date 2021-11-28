@@ -50,7 +50,10 @@ total_enviados <- sum(startsWith(contactos_enviado$procesado, format(Sys.Date(),
 
 print("Empezamos por los errores (marcados como <ERROR> en el campo <procesado>)")
 
-for (i in which(contactos_pendientes$procesado == "ERROR")) {
+peticiones_error <- which(contactos_pendientes$procesado == "ERROR")
+peticiones_validas <- which(contactos_pendientes$procesado != "ERROR")
+
+for (i in peticiones_error) {
 
   if (total_enviados >= MAX_ENVIOS_DIARIOS) {
     break # Se sigue ejecutando el script para subir los datos actualizados
@@ -90,7 +93,7 @@ for (i in which(contactos_pendientes$procesado == "ERROR")) {
 
 print("Vamos con las peticiones válidas")
 
-for (i in which(contactos_pendientes$procesado != "ERROR")) { # es decir: OK, CORREGIDO o REVISADO
+for (i in peticiones_validas) { # es decir: OK, CORREGIDO o REVISADO
 
   if (total_enviados >= MAX_ENVIOS_DIARIOS) {
     break # Se sigue ejecutando el script para subir los datos actualizados
