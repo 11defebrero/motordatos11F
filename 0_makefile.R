@@ -47,6 +47,9 @@ source("4d_actualiza_url_wordpress.R", encoding = "UTF-8")
 # Actualización web
 
 source("99_genera_html_web.R", encoding = "UTF-8")
+#TODO
+# modificar los links a los formularios para que no haya que modificarlos cada año. 
+# o al menos para que se modifiquen todos en el mismo sitio.
 
 # Actualización resúmenes EDA
 
