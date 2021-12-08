@@ -1,10 +1,10 @@
 library(formularios11F)
 library(dplyr)
-library(httr)
-library(knitr)
-library(devtools)
-library(XMLRPC)
-library(RWordPress)
+# library(httr)
+# library(knitr)
+# library(devtools)
+# library(XMLRPC)
+# library(RWordPress)
 
 # devtools::install_github(c("duncantl/XMLRPC", "duncantl/RWordPress"))
 
@@ -16,12 +16,18 @@ config <- leer_config("config/config.json")
 ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio
 ID_SHEET_ACTIVIDADES_WORDPRESS <- config$ids_googledrive$actividades$wordpress
 
+CUENTA_ENVIO_EMAILS <- config$email_envios
+MAX_ENVIOS_DIARIOS <- 200 # comparte el numero con los envios a contactos, si no podrían ser 400
+MAIL_WORDPRESS <- config$wordpress$email
+DIR_WEB <- file.path(dirname(rprojroot::find_rstudio_root_file()), "actividades11F")
 
-options(
-  WordpressLogin = setNames(config$wordpress$password, config$wordpress$user),
-  WordpressURL = config$wordpress$url
-)
+# options(
+#   WordpressLogin = setNames(config$wordpress$password, config$wordpress$user),
+#   WordpressURL = config$wordpress$url
+# )
 
+# Autenticación cuenta Gmail
+gmail_acceso("config/gmail_credentials.json")
 
 
 ## Cargar datos limpios
@@ -42,33 +48,59 @@ if (nrow(actividades_publicar) == 0) {
   stop("No hay actividades por publicar.")
 }
 
+# Recuento nº mails enviados hoy
+
+try(
+  enviados <- startsWith(actividades_publicar$fallos_geo, 
+                                    format(Sys.Date(), format="%d/%m/%Y")),
+  total_enviados <- sum(enviados) 
+  )
+
+total_enviados <- ifelse(is.na(total_enviados), 0, total_enviados)
+
 
 # Publicar posts en borrador
 
 for (i in 1:nrow(actividades_publicar)) {
-
-  tags <- tags_actividad(actividades_publicar[i,], config$edicion)
-  #FIXME 8F2022??
   
-  ## render post
+  if (total_enviados >= MAX_ENVIOS_DIARIOS) {
+    break # Se sigue ejecutando el script para subir los datos actualizados
+  }
+  
+  tags <- tags_actividad(actividades_publicar[i,], config$edicion)
 
-  post_id <- knitr::knit2wp(
-    "templates/wordpress/actividades_wordpress_template.Rmd",
-    envir = parent.frame(),
-    action = "newPost",
-    publish = FALSE,
-    title = actividades_publicar$titulo[i],
-    categories = paste0("Actividades", config$edicion),
-    mt_keywords = tags
+  # FILE_NAME <- paste0("actividad_", i,".html")
+  
+  post_id <- gmail_envia_email_html(
+                to = MAIL_WORDPRESS,
+                from = CUENTA_ENVIO_EMAILS,
+                reply_to = CUENTA_ENVIO_EMAILS,
+                subject = actividades_publicar$titulo[i],
+                body = cuerpo_mail_actividad(actividades_publicar[i, ])
   )
-  #FIXME 
+  
+  actividades_publicar$fallos_geo[i] <- format(Sys.time(), format="%d/%m/%Y %T")
 
-  actividades_publicar$procesado[i] <- post_id
+  total_enviados <- total_enviados + 1
+  
+  Sys.sleep(1)
+  
+  # post_id <- knitr::knit2wp(
+  #   "templates/wordpress/actividades_wordpress_template.Rmd",
+  #   envir = parent.frame(),
+  #   action = "newPost",
+  #   publish = FALSE,
+  #   title = actividades_publicar$titulo[i],
+  #   categories = paste0("Actividades", config$edicion),
+  #   mt_keywords = tags
+  # )
+  
+  actividades_publicar$procesado[i] <- as.character(post_id[[1]])
   print(paste("Vamos por el post", i, " de ", nrow(actividades_publicar)))
 
 }
 
-#FIXME aquí falla
+# Daba este error al usar knit2wp
 # Error in function (type, msg, asError = TRUE)  : 
 #   error:1407742E:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert protocol version
 

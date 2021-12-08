@@ -6,7 +6,7 @@ library(rmarkdown)
 
 config <- leer_config("config/config.json")
 
-# ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$limpio
+ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$solicitudes$limpio
 ID_SHEET_SOLICITUDES_RESTANTES <- config$ids_googledrive$solicitudes$restantes
 ID_SHEET_CONCERTADAS_LIMPIO <- config$ids_googledrive$concertadas$limpio
 ID_SHEET_ACTIVIDADES_LIMPIO <- config$ids_googledrive$actividades$limpio

@@ -38,9 +38,9 @@ source("3b_actualiza_solicitudes_charlas_restantes.R", encoding = "UTF-8")
 source("4a_procesa_actividades.R", encoding = "UTF-8")
 
 source("4b_publica_actividades_wordpress.R", encoding = "UTF-8")
-#FIXME Falla
 
 source("4c_revisa_actividades.R", encoding = "UTF-8")
+
 source("4d_actualiza_url_wordpress.R", encoding = "UTF-8")
 
 

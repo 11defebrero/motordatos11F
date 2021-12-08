@@ -11,7 +11,7 @@ ID_SHEET_CONTACTOS_ENVIADO <- config$ids_googledrive$contactos$enviado
 
 CUENTA_ENVIO_EMAILS <- config$email_envios
 
-MAX_ENVIOS_DIARIOS <- 400
+MAX_ENVIOS_DIARIOS <- 200 # comparte el numero con los envios a contactos, si no podrían ser 400
 
 
 # Autenticación cuenta Gmail
@@ -59,7 +59,7 @@ for (i in peticiones_error) {
     break # Se sigue ejecutando el script para subir los datos actualizados
   }
 
-  print(paste("Correo", i, contactos_pendientes$email_centro[i]))
+  print(paste("Correo", i, " de ", nrow(contactos_pendientes)))
   
   gmail_envia_email(
     to = contactos_pendientes$email[i],
