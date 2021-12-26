@@ -182,21 +182,21 @@ Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más d
 
 ```{r formato}
 
-# pres_online
+# formato
 
 total_solicitudes <- dim(solic)[1]
 
 for (i in 1:length(OPCIONES_FORMATO)){
   data <- solic %>% 
-          filter(pres_online %like% OPCIONES_FORMATO[i]) %>%
-          mutate(pres_online = OPCIONES_FORMATO[i])
+          filter(formato %like% OPCIONES_FORMATO[i]) %>%
+          mutate(formato = OPCIONES_FORMATO[i])
   data0 <- rbind(data, data0)
 }
 
 solic2 <- data0 ; data <- NULL ; data0 <- NULL
 
 tb <- solic2 %>%
-        group_by(pres_online) %>%
+        group_by(formato) %>%
         summarise(ncharlas = n()/total_solicitudes*100) %>%
         mutate(ncharlas = round(ncharlas, 1)) %>%
         arrange(desc(ncharlas))
@@ -238,7 +238,7 @@ kable(tb)
 
 Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más de una opción.
 
-```{r pres_onlines e idioma}
+```{r formatos e idioma}
 
 # idioma
 
@@ -325,11 +325,11 @@ kable(tb)
 ```
 
 
-<!-- ### Comunidad autónoma y pres_online -->
-<!-- ```{r comunidades y pres_online} -->
+<!-- ### Comunidad autónoma y formato -->
+<!-- ```{r comunidades y formato} -->
 
 <!-- tb <- solic %>% -->
-<!--         group_by(com_autonoma, pres_online) %>% -->
+<!--         group_by(com_autonoma, formato) %>% -->
 <!--         summarise(nsolic = n_distinct(id), -->
 <!--                   ncharlas = n()) %>% -->
 <!--         arrange(com_autonoma) -->
@@ -344,10 +344,10 @@ kable(tb)
 
 ### Comunidad autónoma / idioma
 
-```{r comunidades pres_online e idioma}
+```{r comunidades formato e idioma}
 
 tb <- solic %>%
-        # group_by(com_autonoma, pres_online, idioma) %>%
+        # group_by(com_autonoma, formato, idioma) %>%
         group_by(com_autonoma, idioma) %>%
         summarise(nsolic = n_distinct(id)) %>%
         arrange(com_autonoma)
@@ -438,12 +438,12 @@ kable(tb)
 ```
 
 
-<!-- ### Provincia y pres_online -->
+<!-- ### Provincia y formato -->
 
-<!-- ```{r provincia y pres_online} -->
+<!-- ```{r provincia y formato} -->
 
 <!-- tb <- solic %>% -->
-<!--         group_by(provincia, pres_online) %>% -->
+<!--         group_by(provincia, formato) %>% -->
 <!--         summarise(nsolic = n_distinct(id), -->
 <!--                   ncharlas = n()) %>% -->
 <!--         arrange(provincia) -->
@@ -461,7 +461,7 @@ kable(tb)
 <!-- ```{r provincia e idioma} -->
 
 <!-- tb <- solic_idiomas %>% -->
-<!--         # group_by(provincia, pres_online, idioma) %>% -->
+<!--         # group_by(provincia, formato, idioma) %>% -->
 <!--         group_by(provincia, idioma) %>% -->
 <!--         summarise(nsolic = n_distinct(id)) %>% -->
 <!--         arrange(provincia) -->
