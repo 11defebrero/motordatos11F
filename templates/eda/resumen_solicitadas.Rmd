@@ -186,10 +186,10 @@ Nota: el total no suma 100 porque en una solicitud/charla se puede elegir más d
 
 total_solicitudes <- dim(solic)[1]
 
-for (i in 1:length(OPCIONES_PRES_ONLINE)){
+for (i in 1:length(OPCIONES_FORMATO)){
   data <- solic %>% 
-          filter(pres_online %like% OPCIONES_PRES_ONLINE[i]) %>%
-          mutate(pres_online = OPCIONES_PRES_ONLINE[i])
+          filter(pres_online %like% OPCIONES_FORMATO[i]) %>%
+          mutate(pres_online = OPCIONES_FORMATO[i])
   data0 <- rbind(data, data0)
 }
 
