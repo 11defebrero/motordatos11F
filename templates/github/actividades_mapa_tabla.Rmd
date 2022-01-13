@@ -63,7 +63,9 @@ library(DT)
 
 ```{r}
 
-actividades <- get_actividades_limpio(file_id=params$id_sheet, ed <- params$edicion) %>%
+ed <- params$edicion
+
+actividades <- get_actividades_limpio(file_id=params$id_sheet) %>%
   filter(startsWith(procesado, "http")) %>% 
   mutate(
     fecha = ifelse(is.na(fecha), NA, paste(fecha, " febrero ", ed)) #TODO coger el año de la edición automáticamente

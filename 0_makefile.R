@@ -42,6 +42,7 @@ source("4b_publica_actividades_wordpress.R", encoding = "UTF-8")
 source("4c_revisa_actividades.R", encoding = "UTF-8")
 
 source("4d_actualiza_url_wordpress.R", encoding = "UTF-8")
+# no funciona
 
 
 # Actualización web

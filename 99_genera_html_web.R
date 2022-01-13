@@ -103,16 +103,14 @@ rmarkdown::render(
 
 Sys.sleep(5)
 
-# el siguiente aun no funciona
-
-# rmarkdown::render(
-#   encoding = "UTF-8",
-#   input = "templates/github/actividades_mapa_tabla.Rmd",
-#   params = list(id_sheet = ID_SHEET_ACTIVIDADES_WORDPRESS,
-#                  edicion = EDICION),
-#   output_file = "actividades_mapa_tabla.html",
-#   output_dir = DIR_WEB,
-#   output_options = list(lib_dir = DIR_WEB_LIBS),
-#   quiet = TRUE
-# )
+rmarkdown::render(
+  encoding = "UTF-8",
+  input = "templates/github/actividades_mapa_tabla.Rmd",
+  params = list(id_sheet = ID_SHEET_ACTIVIDADES_WORDPRESS,
+                 edicion = EDICION),
+  output_file = "actividades_mapa_tabla.html",
+  output_dir = DIR_WEB,
+  output_options = list(lib_dir = DIR_WEB_LIBS),
+  quiet = TRUE
+)
 
