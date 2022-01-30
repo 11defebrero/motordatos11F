@@ -80,11 +80,11 @@ kable(tb)
 
 ```{r tipo de charla}
 tb <- charlas %>%
-  group_by(tipo_charla) %>%
+  group_by(formato) %>%
   summarise(num_de_charlas = sum(n_charlas))
 
 totals <- tb %>% 
-  summarize(tipo_charla = "Total", 
+  summarize(formato = "Total", 
             num_de_charlas = sum(num_de_charlas) 
             )
 
