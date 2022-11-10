@@ -74,7 +74,7 @@ Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11
 <!-- ) -->
 <!-- ``` -->
 
-<!-- Una vez concertada la charla, por favor, envíanos la información de esta en el plazo de tres días a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad) -->
+<!-- Una vez concertada la charla, por favor, envíanos la información de esta en el plazo de tres días a través de [este link](https://11defebrero.org/charlas-concertadas/) -->
 
 <!-- En [este enlace](concertadas_mapa_tabla.html) podéis ver todas las charlas concertadas hasta el momento. -->
 
