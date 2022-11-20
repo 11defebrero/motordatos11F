@@ -41,9 +41,9 @@ li {
 
 Si detectas algún error en estos datos, por favor, escribe a: correccionesweb11F@gmail.com
 
-Para ver los centros que han solicitado charla/taller y contactar con ellos pincha [aquí](solicitudes_mapa_tabla.html). Una vez concertada la charla, por favor, envíanos la información a través de [este link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
+Para ver los centros que han solicitado charla/taller y contactar con ellos pincha [aquí](solicitudes_mapa_tabla.html). Una vez concertada la charla, por favor, envíanos la información a través de [este link](https://11defebrero.org/charlas-concertadas/).
 
-Si vas a dar una charla en un centro que no lo había solicitado previamente, también puedes anunciarlo mediante el mismo [link](https://11defebrero.org/quieres-anunciar-una-charla-o-actividad).
+Si vas a dar una charla en un centro que no lo había solicitado previamente, también puedes anunciarlo mediante el mismo [link](https://11defebrero.org/charlas-concertadas/).
 
 
 -------------
@@ -82,7 +82,7 @@ concertadas <- get_charlas_concertadas_limpio(file_id=params$id_sheet) %>%
 
 ### Mapa de charlas concertadas
 
-En este mapa interactivo puedes consultar las charlas concertadas.  La localización de los centros en el mapa es aproximada, corresponde al código postal en el que se ubican.
+En este mapa interactivo puedes consultar las charlas concertadas. La localización de los centros en el mapa es aproximada, corresponde al código postal en el que se ubican.
 
 Si pinchas en cualquier icono podrás acceder a más información sobre cada centro y las charlas concertadas.
 
